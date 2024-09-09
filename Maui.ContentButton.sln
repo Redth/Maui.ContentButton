@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35221.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{F604B49E-D1B8-4C57-A021-77C7D7BC0DFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui.ContentButton", "Maui.ContentButton\Maui.ContentButton.csproj", "{BA12F02A-2A4F-4382-A8FE-3096B61DC391}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F604B49E-D1B8-4C57-A021-77C7D7BC0DFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F604B49E-D1B8-4C57-A021-77C7D7BC0DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F604B49E-D1B8-4C57-A021-77C7D7BC0DFD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F604B49E-D1B8-4C57-A021-77C7D7BC0DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F604B49E-D1B8-4C57-A021-77C7D7BC0DFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F604B49E-D1B8-4C57-A021-77C7D7BC0DFD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BA12F02A-2A4F-4382-A8FE-3096B61DC391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA12F02A-2A4F-4382-A8FE-3096B61DC391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA12F02A-2A4F-4382-A8FE-3096B61DC391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA12F02A-2A4F-4382-A8FE-3096B61DC391}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15E58CCE-D772-4991-915E-4A40421CEF2A}
+	EndGlobalSection
+EndGlobal

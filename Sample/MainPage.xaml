@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:extras="clr-namespace:Maui.Extras;assembly=Maui.ButtonContentView"
+             x:Class="Sample.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Image
+                Source="dotnet_bot.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="dot net bot in a race car number eight" />
+
+            <Label
+                Text="Hello, World!"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Welcome to &#10;.NET Multi-platform App UI"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+
+            <extras:ContentButton
+                BackgroundColor="Blue"
+                StrokeThickness="2"
+                CornerRadius="10"
+                StrokeColor="Black"
+                x:Name="CounterBtn"
+                HorizontalOptions="Fill">
+                <Grid ColumnDefinitions="Auto,*,Auto" HorizontalOptions="FillAndExpand">
+                    <Image Source="dotnet_bot.png" Grid.Column="0" HeightRequest="60" />
+                    <Label Text="Button" Grid.Column="1" VerticalOptions="Center" Background="Green" HorizontalOptions="Center" />
+                    <Image Source="dotnet_bot.png" Grid.Column="2" HeightRequest="15" VerticalOptions="End" />
+                </Grid>
+            </extras:ContentButton>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
