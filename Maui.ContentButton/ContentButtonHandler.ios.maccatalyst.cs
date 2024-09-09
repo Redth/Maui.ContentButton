@@ -7,12 +7,10 @@ using MButton = UIKit.UIButton;
 
 namespace Maui.Extras
 {
-    // All the code in this file is only included on Windows.
     public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
     {
         static readonly UIControlState[] ControlStates = { UIControlState.Normal, UIControlState.Highlighted, UIControlState.Disabled };
 
-        // This appears to be the padding that Xcode has when "Default" content insets are used
         public readonly static Thickness DefaultPadding = new Thickness(12, 7);
 
         // Because we can't inherit from Button we use the container to handle
@@ -23,36 +21,32 @@ namespace Maui.Extras
         {
             var button = new UIButton(UIButtonType.System);
             SetControlPropertiesFromProxy(button);
+            var contentSubview = new Microsoft.Maui.Platform.ContentView
+            {
+                CrossPlatformLayout = VirtualView
+            };
+
+            button.ClipsToBounds = true;
+            button.AddSubview(contentSubview);
             return button;
         }
 
         readonly ButtonEventProxy _proxy = new ButtonEventProxy();
 
 
-        PropertyInfo? wrapperViewCrossPlatformMeasureProperty;
-        PropertyInfo WrapperViewCrossPlatformMeasureProperty
-            => wrapperViewCrossPlatformMeasureProperty 
-                ??= typeof(WrapperView).GetProperty("CrossPlatformLayout", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        // PropertyInfo? wrapperViewCrossPlatformMeasureProperty;
+        // PropertyInfo WrapperViewCrossPlatformMeasureProperty
+        //     => wrapperViewCrossPlatformMeasureProperty 
+        //         ??= typeof(WrapperView).GetProperty("CrossPlatformLayout", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
 
-        protected override void SetupContainer()
-        {
-            base.SetupContainer();
-            if (ContainerView is WrapperView wrapperView)
-            {
-                // TODO: Use the internal property properly eventually
-                WrapperViewCrossPlatformMeasureProperty.SetValue(wrapperView, VirtualView as ICrossPlatformLayout);
-                //wrapperView.CrossPlatformLayout = VirtualView as ICrossPlatformLayout;
-            }
-        }
-
-        protected override void ConnectHandler(UIButton platformView)
+        protected override void ConnectHandler(MButton platformView)
         {
             _proxy.Connect(VirtualView, platformView);
 
             base.ConnectHandler(platformView);
         }
 
-        protected override void DisconnectHandler(UIButton platformView)
+        protected override void DisconnectHandler(MButton platformView)
         {
             _proxy.Disconnect(platformView);
 
@@ -121,8 +115,6 @@ namespace Maui.Extras
         {
             foreach (UIControlState uiControlState in ControlStates)
             {
-                platformView.SetTitleColor(UIButton.Appearance.TitleColor(uiControlState), uiControlState); // If new values are null, old values are preserved.
-                platformView.SetTitleShadowColor(UIButton.Appearance.TitleShadowColor(uiControlState), uiControlState);
                 platformView.SetBackgroundImage(UIButton.Appearance.BackgroundImageForState(uiControlState), uiControlState);
             }
         }
@@ -171,29 +163,25 @@ namespace Maui.Extras
             }
         }
 
-
-        static void UpdateContent(IContentButtonHandler handler)
+        public static void MapContent(IContentButtonHandler handler, IContentButton view)
         {
             _ = handler.PlatformView ?? throw new InvalidOperationException($"{nameof(PlatformView)} should have been set by base class.");
             _ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
             _ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
 
-            var existingWrapper = handler.PlatformView.FindDescendantView<WrapperView>();
-            if (existingWrapper is not null)
+            var contentSubview = handler.PlatformView.FindDescendantView<Microsoft.Maui.Platform.ContentView>();
+            if (contentSubview is not null)
             {
-                existingWrapper.RemoveFromSuperview();
-                existingWrapper.Dispose();
-                existingWrapper = null;
+                contentSubview.ClearSubviews();
+
+                if (handler.VirtualView.PresentedContent is IView presentedView)
+                {
+                    var inner = presentedView.ToPlatform(handler.MauiContext);
+                    inner.Frame = handler.PlatformView.Bounds;
+                    inner.AutoresizingMask = UIViewAutoresizing.All;
+                    contentSubview.AddSubview(inner);
+                }
             }
-
-
-            if (handler.VirtualView.PresentedContent is IView view)
-                handler.PlatformView.AddSubview(view.ToPlatform(handler.MauiContext));
-        }
-
-        public static void MapContent(IContentButtonHandler handler, IContentButton view)
-        {
-            UpdateContent(handler);
         }
 
     }
