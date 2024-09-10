@@ -12,17 +12,18 @@ using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Primitives;
+using System.Windows.Input;
+
 
 namespace Maui.Extras
 {
     [ContentProperty(nameof(Content))]
-    public class ContentButton : View, IContentButton
+    public class ContentButton : View, IContentButton, ICrossPlatformLayout
     {
 
         /// <summary>Bindable property for <see cref="Content"/>.</summary>
         public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(ContentView), null);
 
-        /// <include file="../../docs/Microsoft.Maui.Controls/ContentView.xml" path="//Member[@MemberName='Content']/Docs/*" />
         public View Content
         {
             get { return (View)GetValue(ContentProperty); }
@@ -92,73 +93,83 @@ namespace Maui.Extras
             set => SetValue(CornerRadiusProperty, value);
         }
 
-        void IContentButton.Clicked()
-        {
-            //throw new NotImplementedException();
-        }
+		static readonly BindablePropertyKey IsPressedPropertyKey = BindableProperty.CreateReadOnly(nameof(IsPressed), typeof(bool), typeof(ContentButton), default(bool));
 
-        public Size CrossPlatformArrange(Rect bounds)
-        {
-            var thisContentButton = this as IContentButton;
+        public static readonly BindableProperty IsPressedProperty = IsPressedPropertyKey.BindableProperty;
 
-            if (thisContentButton?.PresentedContent is null)
+        public bool IsPressed => (bool)GetValue(IsPressedProperty);
+
+		void IContentButton.Clicked()
+        {
+            if (IsEnabled)
             {
-                return bounds.Size;
-            }
-
-            var padding = Padding;
-
-            var targetBounds = new Rect(
-                bounds.Left + padding.Left,
-                bounds.Top + padding.Top,
-                bounds.Width - padding.HorizontalThickness,
-                bounds.Height - padding.VerticalThickness);
-
-            _ = thisContentButton.PresentedContent.Arrange(targetBounds);
-
-            return bounds.Size;
+				this.ChangeVisualState();
+				Clicked?.Invoke(this, EventArgs.Empty);
+				Command?.Execute(CommandParameter);
+			}
         }
 
-        public Size CrossPlatformMeasure(double widthConstraint, double heightConstraint)
+        void IContentButton.Pressed()
         {
-            var thisContentButton = this as IContentButton;
+            SetValue(IsPressedPropertyKey, true);
+			ChangeVisualState();
+			Pressed?.Invoke(this, EventArgs.Empty);
+		}
 
-            var content = thisContentButton?.PresentedContent;
-
-            if (thisContentButton is not null)
-            {
-
-                if (Dimension.IsExplicitSet(thisContentButton.Width))
-                {
-                    widthConstraint = thisContentButton.Width;
-                }
-
-                if (Dimension.IsExplicitSet(thisContentButton.Height))
-                {
-                    heightConstraint = thisContentButton.Height;
-                }
-            }
-
-            var contentSize = Size.Zero;
-            var inset = this.Padding;
-
-            if (content is not null)
-            {
-                contentSize = content.Measure(widthConstraint - inset.HorizontalThickness,
-                    heightConstraint - inset.VerticalThickness);
-            }
-
-            return new Size(contentSize.Width + inset.HorizontalThickness, contentSize.Height + inset.VerticalThickness);
-        }
-
-        public void Pressed()
+        void IContentButton.Released()
         {
-           //throw new NotImplementedException();
+			SetValue(IsPressedPropertyKey, false);
+			ChangeVisualState();
+			Released?.Invoke(this, EventArgs.Empty);
+		}
+
+		/// <summary>
+		/// Occurs when the button is clicked/tapped.
+		/// </summary>
+		public event EventHandler Clicked;
+
+		/// <summary>
+		/// Occurs when the button is pressed.
+		/// </summary>
+		public event EventHandler Pressed;
+
+		/// <summary>
+		/// Occurs when the button is released.
+		/// </summary>
+		public event EventHandler Released;
+
+		public const string PressedVisualState = "Pressed";
+
+
+		protected override void ChangeVisualState()
+		{
+			if (IsEnabled && IsPressed)
+			{
+				VisualStateManager.GoToState(this, PressedVisualState);
+			}
+			else
+			{
+				base.ChangeVisualState();
+			}
+		}
+
+		public static readonly BindableProperty CommandProperty = BindableProperty.Create(
+			nameof(Command), typeof(ICommand), typeof(ContentButton), null);
+
+        public ICommand Command
+        {
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
-        public void Released()
-        {
-            //throw new NotImplementedException();
-        }
-    }
+		public static readonly BindableProperty CommandParameterProperty = BindableProperty.Create(
+			nameof(CommandParameter), typeof(object), typeof(ContentButton), null);
+
+		public object CommandParameter
+		{
+			get => GetValue(CommandParameterProperty);
+			set => SetValue(CommandParameterProperty, value);
+		}
+
+	}
 }

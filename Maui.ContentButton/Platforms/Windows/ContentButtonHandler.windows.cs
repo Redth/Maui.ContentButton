@@ -2,37 +2,39 @@
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
-using WButton = Microsoft.Maui.Platform.MauiButton;
+using WVerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment;
+using WHorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment;
 
 namespace Maui.Extras
 {
-    // All the code in this file is only included on Windows.
-    public partial class ContentButtonHandler : ViewHandler<IContentButton, WButton>
+
+	// All the code in this file is only included on Windows.
+	public partial class ContentButtonHandler : ViewHandler<IContentButton, MauiContentButton>
     {
         PointerEventHandler? _pointerPressedHandler;
         PointerEventHandler? _pointerReleasedHandler;
 
-        protected override WButton CreatePlatformView()
+        protected override MauiContentButton CreatePlatformView()
         {
             if (VirtualView == null)
             {
                 throw new InvalidOperationException($"{nameof(VirtualView)} must be set to create a LayoutView");
             }
 
-            var buttonContentPanel = new ContentPanel
+            var button = new MauiContentButton()
             {
-                CrossPlatformLayout = VirtualView
-            };
-
-            var button = new WButton()
-            {
-                Content = buttonContentPanel
-            };
+				VerticalAlignment = WVerticalAlignment.Stretch,
+				HorizontalAlignment = WHorizontalAlignment.Stretch,
+				Content = new MauiContentButtonContent
+                {
+                    //CrossPlatformLayout = VirtualView
+                }
+			};
 
             return button;
         }
 
-        protected override void ConnectHandler(WButton platformView)
+        protected override void ConnectHandler(MauiContentButton platformView)
         {
             _pointerPressedHandler = new PointerEventHandler(OnPointerPressed);
             _pointerReleasedHandler = new PointerEventHandler(OnPointerReleased);
@@ -45,7 +47,7 @@ namespace Maui.Extras
         }
 
 
-        protected override void DisconnectHandler(WButton platformView)
+        protected override void DisconnectHandler(MauiContentButton platformView)
         {
             if (platformView.Content is ContentPanel buttonContentPanel)
             {
@@ -63,26 +65,24 @@ namespace Maui.Extras
             base.DisconnectHandler(platformView);
         }
 
-        static void UpdateContent(IContentButtonHandler handler)
-        {
-            _ = handler.PlatformView ?? throw new InvalidOperationException($"{nameof(PlatformView)} should have been set by base class.");
-            _ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
-            _ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
-
-
-            if (handler.PlatformView.Content is ContentPanel buttonContentPanel)
-            {
-                buttonContentPanel.Children.Clear();
-
-                if (handler.VirtualView.PresentedContent is IView view)
-                    buttonContentPanel.Children.Add(view.ToPlatform(handler.MauiContext));
-            }
-        }
-
         public static void MapContent(IContentButtonHandler handler, IContentButton view)
         {
-            UpdateContent(handler);
-        }
+			_ = handler.PlatformView ?? throw new InvalidOperationException($"{nameof(PlatformView)} should have been set by base class.");
+			_ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
+			_ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
+
+
+			if (handler.PlatformView.Content is MauiContentButtonContent buttonContentPanel)
+			{
+                buttonContentPanel.Children.Clear();
+
+                if (handler.VirtualView.PresentedContent is IView presentedView)
+                {
+                    var plat = presentedView.ToPlatform(handler.MauiContext);
+                    buttonContentPanel.Children.Add(plat);
+                }
+			}
+		}
 
         // This is a Windows-specific mapping
         public static void MapBackground(IContentButtonHandler handler, IButton button)

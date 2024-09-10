@@ -64,33 +64,28 @@ namespace Maui.Extras
             base.DisconnectHandler(platformView);
         }
 
-        static void UpdateContent(IContentButtonHandler handler)
-        {
-            _ = handler.PlatformView ?? throw new InvalidOperationException($"{nameof(PlatformView)} should have been set by base class.");
-            _ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
-            _ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
-
-
-            handler.PlatformView.RemoveAllViews();
-
-            if (handler.VirtualView.PresentedContent is IView view)
-                handler.PlatformView.AddView(view.ToPlatform(handler.MauiContext));
-        }
-
         public static void MapContent(IContentButtonHandler handler, IContentButton view)
         {
-            UpdateContent(handler);
-        }
+			_ = handler.PlatformView ?? throw new InvalidOperationException($"{nameof(PlatformView)} should have been set by base class.");
+			_ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
+			_ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
+
+
+			handler.PlatformView.RemoveAllViews();
+
+			if (handler.VirtualView.PresentedContent is IView presentedView)
+				handler.PlatformView.AddView(presentedView.ToPlatform(handler.MauiContext));
+		}
 
         public static void MapBackground(IContentButtonHandler handler, IContentButton view)
         {
-            if (handler.PlatformView is not null)
+            if (handler.PlatformView is not null && view.Background is not null)
                handler.PlatformView.SetCardBackgroundColor(view.Background.ToColor().ToAndroid());
         }
 
         public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)
         {
-            if (handler.PlatformView is not null)
+            if (handler.PlatformView is not null && buttonStroke.StrokeColor is not null)
                 handler.PlatformView.StrokeColor = buttonStroke.StrokeColor.ToAndroid();
         }
 

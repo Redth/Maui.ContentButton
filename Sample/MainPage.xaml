@@ -26,18 +26,18 @@
                 SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
 
             <extras:ContentButton
-                BackgroundColor="Blue"
-                StrokeThickness="2"
-                CornerRadius="10"
-                StrokeColor="Black"
                 x:Name="CounterBtn"
+                Clicked="OnCounterClicked"
                 HorizontalOptions="Fill">
-                <Grid ColumnDefinitions="Auto,*,Auto" HorizontalOptions="FillAndExpand">
+                <Grid ColumnDefinitions="Auto,*,Auto">
                     <Image Source="dotnet_bot.png" Grid.Column="0" HeightRequest="60" />
-                    <Label Text="Button" Grid.Column="1" VerticalOptions="Center" Background="Green" HorizontalOptions="Center" />
+                    <Label x:Name="labelCounter" Text="Button" Grid.Column="1" VerticalOptions="Center" Background="Green" HorizontalOptions="Center" />
                     <Image Source="dotnet_bot.png" Grid.Column="2" HeightRequest="15" VerticalOptions="End" />
                 </Grid>
             </extras:ContentButton>
+
+
+            <Button Text="Normal Button" />
         </VerticalStackLayout>
     </ScrollView>
 
