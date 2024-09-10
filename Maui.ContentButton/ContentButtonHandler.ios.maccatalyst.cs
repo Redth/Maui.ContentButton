@@ -4,7 +4,6 @@ using Microsoft.Maui.Platform;
 using System.Reflection;
 using CoreGraphics;
 using UIKit;
-using ContentView = Microsoft.Maui.Controls.ContentView;
 using MButton = UIKit.UIButton;
 
 namespace Maui.Extras
