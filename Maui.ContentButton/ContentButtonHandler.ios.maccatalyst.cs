@@ -2,11 +2,69 @@
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using System.Reflection;
+using CoreGraphics;
 using UIKit;
+using ContentView = Microsoft.Maui.Controls.ContentView;
 using MButton = UIKit.UIButton;
 
 namespace Maui.Extras
 {
+    public class ContentButtonWrapperView : WrapperView
+    {
+        public ContentButtonWrapperView(RectF frame) : base(frame)
+        {
+            
+        }
+        
+        PropertyInfo? wrapperViewCrossPlatformMeasureProperty;
+        PropertyInfo WrapperViewCrossPlatformMeasureProperty
+            => wrapperViewCrossPlatformMeasureProperty 
+                ??= typeof(WrapperView).GetProperty("CrossPlatformLayout",
+                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!;
+
+        public ICrossPlatformLayout CrossPlatformLayout
+        {
+            get => WrapperViewCrossPlatformMeasureProperty.GetValue(this) as ICrossPlatformLayout;
+            set => WrapperViewCrossPlatformMeasureProperty.SetValue(this, value);
+        }
+
+        public override CGSize SizeThatFits(CGSize size)
+        {
+            var baseSizeThatFits = base.SizeThatFits(size);
+
+            var width = baseSizeThatFits.Width;
+            var height = baseSizeThatFits.Height;
+
+            if (!nfloat.IsInfinity(size.Width))
+                width = new nfloat(Math.Max(width.Value,  size.Width));
+            
+            if (!nfloat.IsInfinity(size.Height))
+                height = new nfloat(Math.Max(height.Value,  size.Height));
+
+            return new CGSize(width, height);
+        }
+    }
+    
+    
+    public class ContentWrapper : Microsoft.Maui.Platform.ContentView
+    {
+        public override CGSize SizeThatFits(CGSize size)
+        {
+            var baseSizeThatFits = base.SizeThatFits(size);
+
+            var width = baseSizeThatFits.Width;
+            var height = baseSizeThatFits.Height;
+
+            if (!nfloat.IsInfinity(size.Width))
+                width = new nfloat(Math.Max(width.Value,  size.Width));
+            
+            if (!nfloat.IsInfinity(size.Height))
+                height = new nfloat(Math.Max(height.Value,  size.Height));
+
+            return new CGSize(width, height);
+        }
+    }
+    
     public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
     {
         static readonly UIControlState[] ControlStates = { UIControlState.Normal, UIControlState.Highlighted, UIControlState.Disabled };
@@ -17,13 +75,16 @@ namespace Maui.Extras
         // Life cycle events and things like monitoring focus changed
         public override bool NeedsContainer => true;
 
+        
         protected override UIButton CreatePlatformView()
         {
             var button = new UIButton(UIButtonType.System);
             SetControlPropertiesFromProxy(button);
-            var contentSubview = new Microsoft.Maui.Platform.ContentView
+            var contentSubview = new ContentWrapper
             {
-                CrossPlatformLayout = VirtualView
+                CrossPlatformLayout = VirtualView,
+                AutoresizingMask = UIViewAutoresizing.All,
+                Frame = button.Bounds
             };
 
             button.ClipsToBounds = true;
@@ -32,12 +93,28 @@ namespace Maui.Extras
         }
 
         readonly ButtonEventProxy _proxy = new ButtonEventProxy();
+        
+        protected override void SetupContainer()
+        {
+            if (PlatformView == null || ContainerView != null)
+                return;
 
+            var oldParent = (UIView?)PlatformView.Superview;
 
-        // PropertyInfo? wrapperViewCrossPlatformMeasureProperty;
-        // PropertyInfo WrapperViewCrossPlatformMeasureProperty
-        //     => wrapperViewCrossPlatformMeasureProperty 
-        //         ??= typeof(WrapperView).GetProperty("CrossPlatformLayout", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+            var oldIndex = oldParent?.IndexOfSubview(PlatformView);
+            PlatformView.RemoveFromSuperview();
+
+            ContainerView ??= new ContentButtonWrapperView(PlatformView.Bounds.ToRectangle())
+            {
+                CrossPlatformLayout = VirtualView
+            };
+            ContainerView.AddSubview(PlatformView);
+
+            if (oldIndex is int idx && idx >= 0)
+                oldParent?.InsertSubview(ContainerView, idx);
+            else
+                oldParent?.AddSubview(ContainerView);
+        }
 
         protected override void ConnectHandler(MButton platformView)
         {
@@ -169,7 +246,7 @@ namespace Maui.Extras
             _ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
             _ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
 
-            var contentSubview = handler.PlatformView.FindDescendantView<Microsoft.Maui.Platform.ContentView>();
+            var contentSubview = handler.PlatformView.FindDescendantView<ContentWrapper>();
             if (contentSubview is not null)
             {
                 contentSubview.ClearSubviews();
