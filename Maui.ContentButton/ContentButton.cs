@@ -7,117 +7,112 @@ using PlatformButtonView = UIKit.UIButton;
 using PlatformButtonView = object;
 #endif
 
-
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Platform;
-using Microsoft.Maui.Primitives;
 using System.Windows.Input;
 
 
-namespace Maui.Extras
+namespace MauiContentButton;
+
+[ContentProperty(nameof(Content))]
+public class ContentButton : View, IContentButton, ICrossPlatformLayout
 {
-    [ContentProperty(nameof(Content))]
-    public class ContentButton : View, IContentButton, ICrossPlatformLayout
+
+    /// <summary>Bindable property for <see cref="Content"/>.</summary>
+    public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(ContentView), null);
+
+    public View Content
     {
+        get { return (View)GetValue(ContentProperty); }
+        set { SetValue(ContentProperty, value); }
+    }
 
-        /// <summary>Bindable property for <see cref="Content"/>.</summary>
-        public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(ContentView), null);
+    protected override void OnBindingContextChanged()
+    {
+        base.OnBindingContextChanged();
 
-        public View Content
+        IView content = Content;
+
+        if (content == null && (this as IContentView)?.PresentedContent is IView presentedContent)
+            content = presentedContent;
+    }
+
+    object IContentButton.Content => Content;
+
+    IView IContentButton.PresentedContent => Content;
+
+
+    public static readonly BindableProperty PaddingProperty =
+        BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(), propertyChanged: (bindableObject, oldValue, newValue) =>
         {
-            get { return (View)GetValue(ContentProperty); }
-            set { SetValue(ContentProperty, value); }
-        }
-
-        protected override void OnBindingContextChanged()
-        {
-            base.OnBindingContextChanged();
-
-            IView content = Content;
-
-            if (content == null && (this as IContentView)?.PresentedContent is IView presentedContent)
-                content = presentedContent;
-        }
-
-        object IContentButton.Content => Content;
-
-        IView IContentButton.PresentedContent => Content;
-
-
-        public static readonly BindableProperty PaddingProperty =
-            BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(), propertyChanged: (bindableObject, oldValue, newValue) =>
+            if (bindableObject is VisualElement ve)
             {
-                if (bindableObject is VisualElement ve)
-                {
-                    // measureinvalidate?
-                }
-            });
+                // measureinvalidate?
+            }
+        });
 
-        public Thickness Padding
-        {
-            get => (Thickness)GetValue(PaddingProperty);
-            set => SetValue(PaddingProperty, value);
-        }
+    public Thickness Padding
+    {
+        get => (Thickness)GetValue(PaddingProperty);
+        set => SetValue(PaddingProperty, value);
+    }
 
 
 
-        public const int DefaultCornerRadius = -1;
+    public const int DefaultCornerRadius = -1;
 
-        public static readonly BindableProperty BorderColorProperty =
-            BindableProperty.Create(nameof(IBorderElement.BorderColor), typeof(Color), typeof(IBorderElement), null);
+    public static readonly BindableProperty BorderColorProperty =
+        BindableProperty.Create(nameof(IBorderElement.BorderColor), typeof(Color), typeof(IBorderElement), null);
 
-        /// <summary>Bindable property for <see cref="IBorderElement.BorderWidth"/>.</summary>
-        public static readonly BindableProperty BorderWidthProperty = BindableProperty.Create(nameof(IBorderElement.BorderWidth), typeof(double), typeof(IBorderElement), -1d);
+    /// <summary>Bindable property for <see cref="IBorderElement.BorderWidth"/>.</summary>
+    public static readonly BindableProperty BorderWidthProperty = BindableProperty.Create(nameof(IBorderElement.BorderWidth), typeof(double), typeof(IBorderElement), -1d);
 
-        /// <summary>Bindable property for <see cref="IBorderElement.CornerRadius"/>.</summary>
-        public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(IBorderElement.CornerRadius), typeof(int), typeof(IBorderElement), defaultValue: DefaultCornerRadius);
+    /// <summary>Bindable property for <see cref="IBorderElement.CornerRadius"/>.</summary>
+    public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(IBorderElement.CornerRadius), typeof(int), typeof(IBorderElement), defaultValue: DefaultCornerRadius);
 
-        
+    
 
-        public Color StrokeColor
-        {
-            get => (Color)GetValue(BorderColorProperty);
-            set => SetValue(BorderColorProperty, value);
-        }
+    public Color StrokeColor
+    {
+        get => (Color)GetValue(BorderColorProperty);
+        set => SetValue(BorderColorProperty, value);
+    }
 
-        public double StrokeThickness
-        {
-            get => (double)GetValue(BorderWidthProperty);
-            set => SetValue(BorderWidthProperty, value);
-        }
+    public double StrokeThickness
+    {
+        get => (double)GetValue(BorderWidthProperty);
+        set => SetValue(BorderWidthProperty, value);
+    }
 
-        public int CornerRadius
-        {
-            get => (int)GetValue(CornerRadiusProperty);
-            set => SetValue(CornerRadiusProperty, value);
-        }
+    public int CornerRadius
+    {
+        get => (int)GetValue(CornerRadiusProperty);
+        set => SetValue(CornerRadiusProperty, value);
+    }
 
 		static readonly BindablePropertyKey IsPressedPropertyKey = BindableProperty.CreateReadOnly(nameof(IsPressed), typeof(bool), typeof(ContentButton), default(bool));
 
-        public static readonly BindableProperty IsPressedProperty = IsPressedPropertyKey.BindableProperty;
+    public static readonly BindableProperty IsPressedProperty = IsPressedPropertyKey.BindableProperty;
 
-        public bool IsPressed => (bool)GetValue(IsPressedProperty);
+    public bool IsPressed => (bool)GetValue(IsPressedProperty);
 
 		void IContentButton.Clicked()
+    {
+        if (IsEnabled)
         {
-            if (IsEnabled)
-            {
 				this.ChangeVisualState();
 				Clicked?.Invoke(this, EventArgs.Empty);
 				Command?.Execute(CommandParameter);
 			}
-        }
+    }
 
-        void IContentButton.Pressed()
-        {
-            SetValue(IsPressedPropertyKey, true);
+    void IContentButton.Pressed()
+    {
+        SetValue(IsPressedPropertyKey, true);
 			ChangeVisualState();
 			Pressed?.Invoke(this, EventArgs.Empty);
 		}
 
-        void IContentButton.Released()
-        {
+    void IContentButton.Released()
+    {
 			SetValue(IsPressedPropertyKey, false);
 			ChangeVisualState();
 			Released?.Invoke(this, EventArgs.Empty);
@@ -156,11 +151,11 @@ namespace Maui.Extras
 		public static readonly BindableProperty CommandProperty = BindableProperty.Create(
 			nameof(Command), typeof(ICommand), typeof(ContentButton), null);
 
-        public ICommand Command
-        {
-            get => (ICommand)GetValue(CommandProperty);
-            set => SetValue(CommandProperty, value);
-        }
+    public ICommand Command
+    {
+        get => (ICommand)GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
 
 		public static readonly BindableProperty CommandParameterProperty = BindableProperty.Create(
 			nameof(CommandParameter), typeof(object), typeof(ContentButton), null);
@@ -172,4 +167,3 @@ namespace Maui.Extras
 		}
 
 	}
-}

@@ -3,7 +3,7 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:extras="clr-namespace:Maui.Extras;assembly=Maui.ContentButton">
+    xmlns:mcb="clr-namespace:MauiContentButton;assembly=Maui.ContentButton">
 
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
@@ -50,7 +50,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="extras:ContentButton">
+    <Style TargetType="mcb:ContentButton">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="14,10"/>

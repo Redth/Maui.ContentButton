@@ -1,18 +1,17 @@
 ﻿#if WINDOWS
 using PlatformButtonView = Microsoft.Maui.Platform.MauiButton;
 #elif ANDROID
-using PlatformButtonView = Maui.Extras.MauiMaterialCardView;
+using PlatformButtonView = MauiContentButton.MauiMaterialCardView;
 #elif IOS || MACCATALYST
 using PlatformButtonView = UIKit.UIButton;
 #else
 using PlatformButtonView = object;
 #endif
 
-namespace Maui.Extras
+namespace MauiContentButton;
+
+public interface IContentButtonHandler : IViewHandler
 {
-    public interface IContentButtonHandler : IViewHandler
-    {
-        new PlatformButtonView PlatformView { get; }
-        new IContentButton VirtualView { get; }
-    }
+    new PlatformButtonView PlatformView { get; }
+    new IContentButton VirtualView { get; }
 }

@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml;
 using WButton = Microsoft.UI.Xaml.Controls.Button;
 
-namespace Maui.Extras;
+namespace MauiContentButton;
 
 public static class ContentButtonExtensions
 {

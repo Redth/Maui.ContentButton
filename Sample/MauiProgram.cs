@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Maui.Extras;
+using MauiContentButton;
 
 namespace Sample
 {
@@ -10,10 +10,7 @@ namespace Sample
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .ConfigureMauiHandlers(handlers =>
-                {
-                    handlers.AddHandler<ContentButton, ContentButtonHandler>();
-                })
+                .AddMauiContentButtonHandler()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

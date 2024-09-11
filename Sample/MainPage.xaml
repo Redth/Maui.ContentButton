@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:extras="clr-namespace:Maui.Extras;assembly=Maui.ContentButton"
+             xmlns:mcb="clr-namespace:MauiContentButton;assembly=Maui.ContentButton"
              x:Class="Sample.MainPage">
 
     <ScrollView>
@@ -25,7 +25,7 @@
                 SemanticProperties.HeadingLevel="Level2"
                 SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
 
-            <extras:ContentButton
+            <mcb:ContentButton
                 x:Name="CounterBtn"
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Fill">
@@ -34,7 +34,7 @@
                     <Label x:Name="labelCounter" Text="Button" Grid.Column="1" VerticalOptions="Center" Background="Green" HorizontalOptions="Center" />
                     <Image Source="dotnet_bot.png" Grid.Column="2" HeightRequest="15" VerticalOptions="End" />
                 </Grid>
-            </extras:ContentButton>
+            </mcb:ContentButton>
 
 
             <Button Text="Normal Button" />

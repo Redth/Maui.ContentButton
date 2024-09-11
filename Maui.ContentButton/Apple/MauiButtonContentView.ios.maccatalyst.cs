@@ -3,7 +3,7 @@ using CoreGraphics;
 using Microsoft.Maui.Platform;
 using UIKit;
 
-namespace Maui.Extras;
+namespace MauiContentButton;
 
 public class MauiButtonContentView : UIView, ICrossPlatformLayoutBacking
 {

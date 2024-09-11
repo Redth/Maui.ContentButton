@@ -5,7 +5,7 @@ using Android.Views;
 using Google.Android.Material.Card;
 using Microsoft.Maui.Platform;
 
-namespace Maui.Extras;
+namespace MauiContentButton;
 
 public class MauiMaterialCardView : MaterialCardView, ICrossPlatformLayoutBacking
 {
