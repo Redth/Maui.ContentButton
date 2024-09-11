@@ -7,8 +7,6 @@ using WHorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment;
 
 namespace Maui.Extras
 {
-
-	// All the code in this file is only included on Windows.
 	public partial class ContentButtonHandler : ViewHandler<IContentButton, MauiContentButton>
     {
         PointerEventHandler? _pointerPressedHandler;

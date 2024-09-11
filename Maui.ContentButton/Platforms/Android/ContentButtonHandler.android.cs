@@ -23,6 +23,7 @@ namespace Maui.Extras
                 CrossPlatformLayout = VirtualView
             };
 
+            buttonViewGroup.CardElevation = 0f;
             buttonViewGroup.SetClipChildren(true);
 
             return buttonViewGroup;
