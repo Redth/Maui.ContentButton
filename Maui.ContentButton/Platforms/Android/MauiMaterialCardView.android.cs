@@ -11,7 +11,7 @@ public class MauiMaterialCardView : MaterialCardView, ICrossPlatformLayoutBackin
 {
     readonly Context _context;
 
-    public MauiMaterialCardView(Context context) : base(context)
+	public MauiMaterialCardView(Context context) : base(context)
     {
         _context = context;
     }

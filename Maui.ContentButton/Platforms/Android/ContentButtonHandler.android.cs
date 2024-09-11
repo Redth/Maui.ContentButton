@@ -1,5 +1,6 @@
 ﻿using Android.Views;
 using Google.Android.Material.Shape;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
@@ -18,15 +19,15 @@ namespace Maui.Extras
                 throw new InvalidOperationException($"{nameof(VirtualView)} must be set to create a LayoutView");
             }
 
-            var buttonViewGroup = new MauiMaterialCardView(Context)
+            var materialCard = new MauiMaterialCardView(Context)
             {
                 CrossPlatformLayout = VirtualView
             };
 
-            buttonViewGroup.CardElevation = 0f;
-            buttonViewGroup.SetClipChildren(true);
+            materialCard.CardElevation = 0f;
+			materialCard.SetClipChildren(true);
 
-            return buttonViewGroup;
+            return materialCard;
         }
 
         ButtonClickListener ClickListener { get; } = new ButtonClickListener();
@@ -71,7 +72,6 @@ namespace Maui.Extras
 			_ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
 			_ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
 
-
 			handler.PlatformView.RemoveAllViews();
 
 			if (handler.VirtualView.PresentedContent is IView presentedView)
@@ -80,8 +80,11 @@ namespace Maui.Extras
 
         public static void MapBackground(IContentButtonHandler handler, IContentButton view)
         {
+            // TODO: Handle more complex backgrounds than a single color (eg: gradient)
             if (handler.PlatformView is not null && view.Background is not null)
+            {
                handler.PlatformView.SetCardBackgroundColor(view.Background.ToColor().ToAndroid());
+            }
         }
 
         public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)
@@ -94,8 +97,8 @@ namespace Maui.Extras
         {
             if (handler.PlatformView is not null)
             {
-                var density = (handler.PlatformView.Resources?.DisplayMetrics?.Density ?? 1f);
-                handler.PlatformView.StrokeWidth = (int)Math.Ceiling(buttonStroke.StrokeThickness) * 4;
+                var density = handler.PlatformView.Resources?.DisplayMetrics?.Density ?? 1f;
+                handler.PlatformView.StrokeWidth = (int)Math.Ceiling(buttonStroke.StrokeThickness * density);
             }
         }
 
