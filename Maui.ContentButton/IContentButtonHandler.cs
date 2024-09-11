@@ -12,6 +12,6 @@ namespace MauiContentButton;
 
 public interface IContentButtonHandler : IViewHandler
 {
-    new PlatformButtonView PlatformView { get; }
-    new IContentButton VirtualView { get; }
+	new PlatformButtonView PlatformView { get; }
+	new IContentButton VirtualView { get; }
 }

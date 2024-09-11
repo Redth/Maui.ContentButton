@@ -29,15 +29,47 @@
                 x:Name="CounterBtn"
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Fill">
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    <Image Source="dotnet_bot.png" Grid.Column="0" HeightRequest="60" />
-                    <Label x:Name="labelCounter" Text="Button" Grid.Column="1" VerticalOptions="Center" Background="Green" HorizontalOptions="Center" />
-                    <Image Source="dotnet_bot.png" Grid.Column="2" HeightRequest="15" VerticalOptions="End" />
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="*,*">
+                    <Image
+                        Source="dotnet_bot.png"
+                        Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                        HeightRequest="30" Margin="6,0,2,0" />
+                    <Label 
+                        Text="Content Button"
+                        FontSize="Subtitle"
+                        TextColor="{DynamicResource White}"
+                        FontAttributes="Bold"
+                        Padding="0,6,0,0"
+                        Grid.Column="1" Grid.Row="0"
+                        VerticalOptions="End"
+                        HorizontalOptions="Start" />
+
+                    <Label 
+                        x:Name="labelCounter" 
+                        Text="Click the button..."
+                        FontSize="Body"
+                        TextColor="{DynamicResource Gray100}"
+                        Padding="0,0,0,6"
+                        Grid.Column="1" Grid.Row="1"
+                        VerticalOptions="Start"
+                        HorizontalOptions="Start" />
+
+                    <ContentView
+                        WidthRequest="1.1" 
+                        VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}"
+                        Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" />
+
+                    <Ellipse
+                        x:Name="ellipseState"
+                        WidthRequest="14" HeightRequest="14"
+                        Grid.Column="3" Grid.Row="0" Grid.RowSpan="2"
+                        VerticalOptions="Center"
+                        Margin="10,0,12,0"
+                        Fill="{DynamicResource Tertiary}"
+                        />
                 </Grid>
             </mcb:ContentButton>
 
-
-            <Button Text="Normal Button" />
         </VerticalStackLayout>
     </ScrollView>
 

@@ -9,29 +9,29 @@ namespace MauiContentButton;
 
 public class MauiContentButtonContent : MauiPanel
 {
-    public MauiContentButtonContent() : base()
+	public MauiContentButtonContent() : base()
 	{
 		VerticalAlignment = WVerticalAlignment.Stretch;
 		HorizontalAlignment = WHorizontalAlignment.Stretch;
-            Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-            Margin = new WThickness(0);
+		Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+		Margin = new WThickness(0);
 	}
 
 	protected override WSize MeasureOverride(WSize availableSize)
 	{
 		double measuredHeight = 0;
 		double measuredWidth = 0;
-		
-            foreach (var c in Children)
-            {
-                c.Measure(availableSize);
+
+		foreach (var c in Children)
+		{
+			c.Measure(availableSize);
 			measuredHeight = Math.Max(measuredHeight, c.DesiredSize.Height);
 			measuredWidth = Math.Max(measuredWidth, c.DesiredSize.Width);
 		}
 
-            if (!double.IsInfinity(availableSize.Width) && HorizontalAlignment == WHorizontalAlignment.Stretch)
-            {
-                measuredWidth = Math.Max(measuredWidth, availableSize.Width);
+		if (!double.IsInfinity(availableSize.Width) && HorizontalAlignment == WHorizontalAlignment.Stretch)
+		{
+			measuredWidth = Math.Max(measuredWidth, availableSize.Width);
 		}
 
 		if (!double.IsInfinity(availableSize.Height) && VerticalAlignment == WVerticalAlignment.Stretch)
@@ -44,8 +44,8 @@ public class MauiContentButtonContent : MauiPanel
 
 	protected override WSize ArrangeOverride(WSize finalSize)
 	{
-            foreach (var c in Children)
-                c.Arrange(new WRect(0, 0, finalSize.Width, finalSize.Height));
+		foreach (var c in Children)
+			c.Arrange(new WRect(0, 0, finalSize.Width, finalSize.Height));
 
 		return new WSize(finalSize.Width, finalSize.Height);
 	}

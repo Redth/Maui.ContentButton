@@ -101,17 +101,17 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 				{
 					Color backgroundColor = solidPaint.Color;
 
-                        if (backgroundColor == null)
-                        {
-                            if (OperatingSystem.IsIOSVersionAtLeast(13))
-                                config.BaseBackgroundColor = UIColor.SystemBackground;
-                            else
-                                config.BaseBackgroundColor = UIColor.White;
-                        }
-                        else
-                        {
-                            config.BaseBackgroundColor = backgroundColor.ToPlatform();
-                        }
+					if (backgroundColor == null)
+					{
+						if (OperatingSystem.IsIOSVersionAtLeast(13))
+							config.BaseBackgroundColor = UIColor.SystemBackground;
+						else
+							config.BaseBackgroundColor = UIColor.White;
+					}
+					else
+					{
+						config.BaseBackgroundColor = backgroundColor.ToPlatform();
+					}
 
 				}
 			}

@@ -12,6 +12,7 @@ public class MauiContentButton : WButton
 	{
 		VerticalAlignment = WVerticalAlignment.Stretch;
 		HorizontalAlignment = WHorizontalAlignment.Stretch;
+		Padding = new Microsoft.UI.Xaml.Thickness(0);
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer()

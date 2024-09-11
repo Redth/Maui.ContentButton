@@ -19,6 +19,7 @@
             else
 				labelCounter.Text = $"Clicked {count} times";
 
+            ellipseState.Fill = (count % 2 == 0 ? App.Current.Resources["Tertiary"] : App.Current.Resources["Secondary"]) as Color;
             //SemanticScreenReader.Announce(CounterBtn.Text);
         }
     }
