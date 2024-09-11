@@ -4,7 +4,5 @@ WIP: Button that can take any content inside of it while still acting like a nat
 
 | Android | Windows |
 |---------|---------|
-| https://github.com/user-attachments/assets/15b579c3-c2b1-4690-8873-a9e2559da459 | https://github.com/user-attachments/assets/1aa3810e-0471-4beb-b0d3-21244f9e625a |
-
-
+| ![Maui ContentButton Android](https://github.com/user-attachments/assets/1a9a8872-6901-411d-9e9f-c462f0fbd8d8) | ![Maui ContentButton Windows](https://github.com/user-attachments/assets/de9c5bef-d2c6-491e-a9f8-9d3f0f5bd773) |
 
