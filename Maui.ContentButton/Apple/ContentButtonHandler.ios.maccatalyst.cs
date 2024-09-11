@@ -7,22 +7,8 @@ using MButton = UIKit.UIButton;
 
 namespace Maui.Extras
 {
-	public static class WrapperViewExtensions
-	{
-		static PropertyInfo? wrapperViewCrossPlatformMeasureProperty;
-		static PropertyInfo WrapperViewCrossPlatformMeasureProperty
-			=> wrapperViewCrossPlatformMeasureProperty
-				??= typeof(WrapperView).GetProperty("CrossPlatformLayout",
-					BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!;
 
-		public static ICrossPlatformLayout? GetCrossPlatformLayout(this WrapperView wrapperView)
-			=> WrapperViewCrossPlatformMeasureProperty.GetValue(wrapperView) as ICrossPlatformLayout;
-
-		public static void SetCrossPlatformLayout(this WrapperView wrapperView, ICrossPlatformLayout value)
-			=> WrapperViewCrossPlatformMeasureProperty.SetValue(wrapperView, value);
-	}
-
-	public class ContentButtonMauiView : Microsoft.Maui.Platform.MauiView
+    public class ContentButtonMauiView : Microsoft.Maui.Platform.MauiView
 	{
 		public override void LayoutSubviews()
 		{
@@ -68,7 +54,11 @@ namespace Maui.Extras
 			SetControlPropertiesFromProxy(button);
 
 			button.ClipsToBounds = true;
-			button.AddSubview(new ContentButtonMauiView
+			// button.AddSubview(new ContentButtonMauiView
+			// {
+			// 	CrossPlatformLayout = VirtualView,
+			// });
+			button.AddSubview(new MauiButtonContentView
 			{
 				CrossPlatformLayout = VirtualView,
 			});
@@ -216,7 +206,7 @@ namespace Maui.Extras
 			_ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
 			_ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
 
-			var contentSubview = handler.PlatformView.FindDescendantView<ContentButtonMauiView>();
+			var contentSubview = handler.PlatformView.FindDescendantView<MauiButtonContentView>();
 			if (contentSubview is not null)
 			{
 				contentSubview.ClearSubviews();
@@ -230,7 +220,6 @@ namespace Maui.Extras
 				contentSubview.SetNeedsLayout();
 			}
 		}
-
 	}
 }
 
