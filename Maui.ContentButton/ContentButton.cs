@@ -50,7 +50,7 @@ namespace Maui.Extras
             {
                 if (bindableObject is VisualElement ve)
                 {
-                    // measureinvalidate
+                    // measureinvalidate?
                 }
             });
 

@@ -9,7 +9,6 @@ namespace Maui.Extras;
 
 public class MauiMaterialCardView : MaterialCardView, ICrossPlatformLayoutBacking
 {
-    IBorderStroke? _clip;
     readonly Context _context;
 
     public MauiMaterialCardView(Context context) : base(context)
@@ -33,11 +32,6 @@ public class MauiMaterialCardView : MaterialCardView, ICrossPlatformLayoutBackin
     {
         _context = context;
     }
-
-    //public MauiMaterialCardView(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes) : base(context, attrs, defStyleAttr, defStyleRes)
-    //{
-    //    _context = context;
-    //}
 
     public ICrossPlatformLayout? CrossPlatformLayout
     {
@@ -96,50 +90,4 @@ public class MauiMaterialCardView : MaterialCardView, ICrossPlatformLayoutBackin
 
         CrossPlatformArrange(destination);
     }
-
-    internal IBorderStroke? Clip
-    {
-        get => _clip;
-        set
-        {
-            _clip = value;
-            SetClipChildren(_clip is not null);
-            // NOTE: calls PostInvalidate()
-//            SetHasClip(_clip is not null);
-        }
-    }
-    
-    //protected override Android.Graphics.Path? GetClipPath(int width, int height)
-    //{
-    //    if (Clip is null || Clip?.Shape is null)
-    //        return null;
-
-    //    float density = _context.GetDisplayDensity();
-    //    float strokeThickness = (float)Clip.StrokeThickness;
-
-    //    // We need to inset the content clipping by the width of the stroke on both sides
-    //    // (top and bottom, left and right), so we remove it twice from the total width/height 
-    //    var strokeInset = 2 * strokeThickness;
-    //    float w = (width / density) - strokeInset;
-    //    float h = (height / density) - strokeInset;
-    //    float x = strokeThickness;
-    //    float y = strokeThickness;
-    //    IShape clipShape = Clip.Shape;
-
-    //    var bounds = new Microsoft.Maui.Graphics.RectF(x, y, w, h);
-
-    //    var platformPath = clipShape.ToPlatform(bounds, strokeThickness, density, true);
-    //    return platformPath;
-    //}
-
-    //IVisualTreeElement? IVisualTreeElementProvidable.GetElement()
-    //{
-    //    if (CrossPlatformLayout is IVisualTreeElement layoutElement &&
-    //        layoutElement.IsThisMyPlatformView(this))
-    //    {
-    //        return layoutElement;
-    //    }
-
-    //    return null;
-    //}
 }
