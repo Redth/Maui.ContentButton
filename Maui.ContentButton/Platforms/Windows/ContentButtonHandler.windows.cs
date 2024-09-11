@@ -85,12 +85,12 @@ namespace Maui.Extras
 		}
 
         // This is a Windows-specific mapping
-        public static void MapBackground(IContentButtonHandler handler, IButton button)
+        public static void MapBackground(IContentButtonHandler handler, IContentButton button)
         {
-            handler.PlatformView?.UpdateBackground(button);
-        }
+            handler.PlatformView.UpdateContentButtonBackground(button);
+        }		
 
-        public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)
+		public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)
         {
             handler.PlatformView?.UpdateStrokeColor(buttonStroke);
         }

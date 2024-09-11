@@ -22,8 +22,4 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.90-ci.net8.24459.1" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Platforms\iOS\" />
-	</ItemGroup>
-
 </Project>

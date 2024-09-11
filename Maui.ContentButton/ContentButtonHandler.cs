@@ -26,7 +26,7 @@ namespace Maui.Extras
             [nameof(IButtonStroke.CornerRadius)] = MapCornerRadius,
             [nameof(IContentButton.Content)] = MapContent,
 
-#if ANDROID || MACCATALYST
+#if ANDROID || MACCATALYST || WINDOWS
             [nameof(IContentButton.Background)] = MapBackground,
 #endif
         };
