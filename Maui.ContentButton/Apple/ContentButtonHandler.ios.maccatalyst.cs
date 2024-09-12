@@ -6,35 +6,6 @@ using MButton = UIKit.UIButton;
 
 namespace MauiContentButton;
 
-public class ContentButtonMauiView : Microsoft.Maui.Platform.MauiView
-{
-	public override void LayoutSubviews()
-	{
-		// This seems like extra work since MauiView does calculations then we do them again
-		base.LayoutSubviews();
-
-		// Use the superview's bounds for the measurement constraints
-		var bounds = Superview.Bounds;
-
-		var widthConstraint = bounds.Width;
-		var heightConstraint = bounds.Height;
-
-		// Copied from the base implementation:
-		// If the SuperView is a MauiView (backing a cross-platform ContentView or Layout), then measurement
-		// has already happened via SizeThatFits and doesn't need to be repeated in LayoutSubviews. But we
-		// _do_ need LayoutSubviews to make a measurement pass if the parent is something else (for example,
-		// the window); there's no guarantee that SizeThatFits has been called in that case.
-
-		if (!IsMeasureValid(widthConstraint, heightConstraint) && Superview is not MauiView)
-		{
-			CrossPlatformLayout?.CrossPlatformMeasure(widthConstraint, heightConstraint);
-			CacheMeasureConstraints(widthConstraint, heightConstraint);
-		}
-
-		CrossPlatformLayout?.CrossPlatformArrange(bounds.ToRectangle());
-	}
-}
-
 public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 {
 	static readonly UIControlState[] ControlStates = { UIControlState.Normal, UIControlState.Highlighted, UIControlState.Disabled };
@@ -52,10 +23,6 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 		SetControlPropertiesFromProxy(button);
 
 		button.ClipsToBounds = true;
-		// button.AddSubview(new ContentButtonMauiView
-		// {
-		// 	CrossPlatformLayout = VirtualView,
-		// });
 		button.AddSubview(new MauiButtonContentView
 		{
 			CrossPlatformLayout = VirtualView,
