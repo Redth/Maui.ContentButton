@@ -87,5 +87,5 @@ Use the button with whatever content you wish!
 
 ## Known Issues
 - Due to some recent changes in MAUI itself, this currently requires nightly builds of .NET MAUI (8.0.9x SR9 will work when it's released)
-- Setting Padding/Margin on the button or direct button content itself doesn't work as expected yet on every platform
+- No Padding property on the Button itself yet, so you need to set a margin on the inner content instead
 - Android uses MaterialCardView which doesn't have a simple way to set a complex background, so currently it can only set a background color (no gradients, etc), but you still get ripples and everything as a result
