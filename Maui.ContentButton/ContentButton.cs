@@ -17,7 +17,23 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 {
 
 	/// <summary>Bindable property for <see cref="Content"/>.</summary>
-	public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(ContentView), null);
+	public static readonly BindableProperty ContentProperty 
+		= BindableProperty.Create(nameof(Content), typeof(View), typeof(ContentView), null,
+		propertyChanged: (bindableObject, oldValue, newValue) =>
+		{
+			if (bindableObject is ContentButton contentButton)
+			{
+				if (oldValue is View oldView)
+				{
+					VisualDiagnostics.OnChildRemoved(contentButton, oldView, 0);
+				}
+
+				if (newValue is View newView)
+				{
+					VisualDiagnostics.OnChildAdded(contentButton, newView, 0);
+				}
+			}
+		});
 
 	public View Content
 	{
@@ -33,6 +49,9 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 
 		if (content == null && (this as IContentView)?.PresentedContent is IView presentedContent)
 			content = presentedContent;
+
+		if (content is BindableObject bindableContent)
+			bindableContent.BindingContext = BindingContext;
 	}
 
 	object IContentButton.Content => Content;
@@ -41,11 +60,12 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 
 
 	public static readonly BindableProperty PaddingProperty =
-		BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(), propertyChanged: (bindableObject, oldValue, newValue) =>
+		BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(),
+		propertyChanged: (bindable, oldValue, newValue) =>
 		{
-			if (bindableObject is VisualElement ve)
+			if (bindable is ContentButton contentButton)
 			{
-				// measureinvalidate?
+				contentButton.InvalidateMeasure();
 			}
 		});
 
@@ -63,10 +83,12 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 		BindableProperty.Create(nameof(IBorderElement.BorderColor), typeof(Color), typeof(IBorderElement), null);
 
 	/// <summary>Bindable property for <see cref="IBorderElement.BorderWidth"/>.</summary>
-	public static readonly BindableProperty BorderWidthProperty = BindableProperty.Create(nameof(IBorderElement.BorderWidth), typeof(double), typeof(IBorderElement), -1d);
+	public static readonly BindableProperty BorderWidthProperty =
+		BindableProperty.Create(nameof(IBorderElement.BorderWidth), typeof(double), typeof(IBorderElement), -1d);
 
 	/// <summary>Bindable property for <see cref="IBorderElement.CornerRadius"/>.</summary>
-	public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(IBorderElement.CornerRadius), typeof(int), typeof(IBorderElement), defaultValue: DefaultCornerRadius);
+	public static readonly BindableProperty CornerRadiusProperty =
+		BindableProperty.Create(nameof(IBorderElement.CornerRadius), typeof(int), typeof(IBorderElement), defaultValue: DefaultCornerRadius);
 
 
 

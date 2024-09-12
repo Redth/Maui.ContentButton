@@ -86,7 +86,6 @@ Use the button with whatever content you wish!
 ```
 
 ## Known Issues
-- Hot Reload does not see content changes yet (this requires a few more changes to tell the Visual Tree what's up - coming soon)
 - Due to some recent changes in MAUI itself, this currently requires nightly builds of .NET MAUI (8.0.9x SR9 will work when it's released)
 - Setting Padding/Margin on the button or direct button content itself doesn't work as expected yet on every platform
 - Android uses MaterialCardView which doesn't have a simple way to set a complex background, so currently it can only set a background color (no gradients, etc), but you still get ripples and everything as a result
