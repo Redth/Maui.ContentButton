@@ -9,7 +9,7 @@ using PlatformButtonView = object;
 
 namespace MauiContentButton;
 
-public interface IContentButton : IView, IPadding, IButtonStroke, ICrossPlatformLayout
+public interface IContentButton : IView, IButtonStroke, ICrossPlatformLayout //, IPadding
 {
 	/// <summary>
 	/// Occurs when the button is pressed.
@@ -41,7 +41,7 @@ public interface IContentButton : IView, IPadding, IButtonStroke, ICrossPlatform
 	/// Implementing classes should implement the ICrossPlatformLayout interface rather than directly implementing this method.
 	/// </summary>
 	new Size CrossPlatformMeasure(double widthConstraint, double heightConstraint)
-	=> (Content as IView)?.Measure(widthConstraint, heightConstraint) ?? Size.Zero;
+		=> (Content as IView)?.Measure(widthConstraint, heightConstraint) ?? Size.Zero;
 
 	/// <summary>
 	/// This interface method is provided for backward compatibility with previous versions. 
@@ -51,7 +51,9 @@ public interface IContentButton : IView, IPadding, IButtonStroke, ICrossPlatform
 		=> (Content as IView)?.Arrange(bounds) ?? Size.Zero;
 
 #if !NETSTANDARD2_0
-	Size ICrossPlatformLayout.CrossPlatformArrange(Microsoft.Maui.Graphics.Rect bounds) => CrossPlatformArrange(bounds);
-	Size ICrossPlatformLayout.CrossPlatformMeasure(double widthConstraint, double heightConstraint) => CrossPlatformMeasure(widthConstraint, heightConstraint);
+	Size ICrossPlatformLayout.CrossPlatformArrange(Microsoft.Maui.Graphics.Rect bounds)
+		=> CrossPlatformArrange(bounds);
+	Size ICrossPlatformLayout.CrossPlatformMeasure(double widthConstraint, double heightConstraint)
+		=> CrossPlatformMeasure(widthConstraint, heightConstraint);
 #endif
 }

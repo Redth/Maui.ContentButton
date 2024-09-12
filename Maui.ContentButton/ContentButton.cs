@@ -59,21 +59,21 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 	IView IContentButton.PresentedContent => Content;
 
 
-	public static readonly BindableProperty PaddingProperty =
-		BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(),
-		propertyChanged: (bindable, oldValue, newValue) =>
-		{
-			if (bindable is ContentButton contentButton)
-			{
-				contentButton.InvalidateMeasure();
-			}
-		});
+	// public static readonly BindableProperty PaddingProperty =
+	// 	BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(),
+	// 	propertyChanged: (bindable, oldValue, newValue) =>
+	// 	{
+	// 		if (bindable is ContentButton contentButton)
+	// 		{
+	// 			contentButton.InvalidateMeasure();
+	// 		}
+	// 	});
 
-	public Thickness Padding
-	{
-		get => (Thickness)GetValue(PaddingProperty);
-		set => SetValue(PaddingProperty, value);
-	}
+	// public Thickness Padding
+	// {
+	// 	get => (Thickness)GetValue(PaddingProperty);
+	// 	set => SetValue(PaddingProperty, value);
+	// }
 
 
 

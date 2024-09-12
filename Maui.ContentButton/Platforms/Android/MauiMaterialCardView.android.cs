@@ -86,7 +86,11 @@ public class MauiMaterialCardView : MaterialCardView, ICrossPlatformLayoutBackin
 			return;
 		}
 
-		var destination = _context.ToCrossPlatformRectInReferenceFrame(left, top, right, bottom);
+		var destination = _context.ToCrossPlatformRectInReferenceFrame(
+			left,
+			top,
+			right,
+			bottom);
 
 		CrossPlatformArrange(destination);
 	}

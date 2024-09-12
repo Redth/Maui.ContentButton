@@ -107,10 +107,10 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 		handler.PlatformView?.UpdateCornerRadius(buttonStroke);
 	}
 
-	public static void MapPadding(IContentButtonHandler handler, IPadding padding)
-	{
-		handler.PlatformView?.UpdatePadding(padding.Padding, DefaultPadding);
-	}
+	// public static void MapPadding(IContentButtonHandler handler, IPadding padding)
+	// {
+	// 	handler.PlatformView?.UpdatePadding(padding.Padding, DefaultPadding);
+	// }
 
 
 	static void SetControlPropertiesFromProxy(UIButton platformView)

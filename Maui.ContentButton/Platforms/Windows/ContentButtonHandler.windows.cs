@@ -105,10 +105,10 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MauiCont
 		handler.PlatformView?.UpdateCornerRadius(buttonStroke);
 	}
 
-	public static void MapPadding(IContentButtonHandler handler, IPadding padding)
-	{
-		handler.PlatformView?.UpdatePadding(padding, new Microsoft.UI.Xaml.Thickness(0));
-	}
+	// public static void MapPadding(IContentButtonHandler handler, IPadding padding)
+	// {
+	// 	handler.PlatformView?.UpdatePadding(padding, new Microsoft.UI.Xaml.Thickness(0));
+	// }
 
 	void OnClick(object sender, RoutedEventArgs e)
 	{
