@@ -88,4 +88,4 @@ Use the button with whatever content you wish!
 ## Known Issues
 - Hot Reload does not see content changes yet (this requires a few more changes to tell the Visual Tree what's up - coming soon)
 - Setting Padding/Margin on the button or direct button content itself doesn't work as expected yet on every platform
-- Android uses MaterialCardView which doesn't have a simple way to set a complex background, so currently it can only set a background color (no gradients, etc)
+- Android uses MaterialCardView which doesn't have a simple way to set a complex background, so currently it can only set a background color (no gradients, etc), but you still get ripples and everything as a result
