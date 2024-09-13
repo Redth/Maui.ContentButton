@@ -87,8 +87,9 @@ Use the button with whatever content you wish!
 
 
 You may want to add a style to your app's `Resources/Styles/Styles.xaml` to make the defaults more like the normal `Button`
+(remember to add the `xmlns:mcb="http://schemas.microsoft.com/dotnet/2024/maui/contentbutton"` namespace to your `<ResourceDictionary>` element):
 ```xml
-<Style xmlns:mcb="http://schemas.microsoft.com/dotnet/2024/maui/contentbutton" TargetType="mcb:ContentButton">
+<Style TargetType="mcb:ContentButton">
    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
    <Setter Property="CornerRadius" Value="8"/>
    <Setter Property="MinimumHeightRequest" Value="44"/>
