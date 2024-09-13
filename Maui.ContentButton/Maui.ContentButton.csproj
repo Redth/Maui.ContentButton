@@ -40,7 +40,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.90-ci.net8.24459.1" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.90" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
 	</ItemGroup>
 
