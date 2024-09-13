@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Maui.ContentButton</PackageId>
+		<PackageId>Plugin.Maui.ContentButton</PackageId>
 		<Title>ContentButton for .NET MAUI</Title>
 		<PackageDescription>ContentButton which allows you to nest any MAUI view(s) inside of it</PackageDescription>
 		<Authors>Redth</Authors>
