@@ -19,7 +19,7 @@ Android is the trickiest, since its `Button` (and `MaterialButton`) derive from 
 
 ## Usage
 
-Example of a MauiProgram.cs:
+Add `.AddMauiContentButtonHandler()` to your app builder in your MauiProgram.cs:
 
 ```csharp
  builder
@@ -33,8 +33,8 @@ Example of a MauiProgram.cs:
      });
 ```
 
-Add your xml namespace:
-`xmlns:mcb="clr-namespace:MauiContentButton;assembly=Maui.ContentButton"`
+Import the xml namespace in the XAML file you would like to use the Content Button in:
+`xmlns:mcb="http://schemas.microsoft.com/dotnet/2024/maui/contentbutton"`
 
 Use the button with whatever content you wish!
 
@@ -85,7 +85,32 @@ Use the button with whatever content you wish!
 </mcb:ContentButton>
 ```
 
+
+You may want to add a style to your app's `Resources/Styles/Styles.xaml` to make the defaults more like the normal `Button`
+```xml
+<Style xmlns:mcb="http://schemas.microsoft.com/dotnet/2024/maui/contentbutton" TargetType="mcb:ContentButton">
+   <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+   <Setter Property="CornerRadius" Value="8"/>
+   <Setter Property="MinimumHeightRequest" Value="44"/>
+   <Setter Property="MinimumWidthRequest" Value="44"/>
+   <Setter Property="VisualStateManager.VisualStateGroups">
+       <VisualStateGroupList>
+           <VisualStateGroup x:Name="CommonStates">
+               <VisualState x:Name="Normal" />
+               <VisualState x:Name="Disabled">
+                   <VisualState.Setters>
+                       <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
+                   </VisualState.Setters>
+               </VisualState>
+               <VisualState x:Name="PointerOver" />
+           </VisualStateGroup>
+       </VisualStateGroupList>
+   </Setter>
+</Style>
+```
+
 ## Known Issues
-- Due to some recent changes in MAUI itself, this currently requires nightly builds of .NET MAUI (8.0.9x SR9 will work when it's released)
+- Due to some recent changes in MAUI itself, this currently requires .NET MAUI 8.0.90 (SR9) or newer
+- Changing `Background` instead of `BackgroundColor` does not always work correctly on every platform
 - No Padding property on the Button itself yet, so you need to set a margin on the inner content instead
-- Android uses MaterialCardView which doesn't have a simple way to set a complex background, so currently it can only set a background color (no gradients, etc), but you still get ripples and everything as a result
+- Android uses `MaterialCardView` which doesn't have a simple way to set a complex background, so currently it can only set a background color (no gradients, etc), but you still get ripples and everything as a result
