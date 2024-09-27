@@ -26,7 +26,7 @@ public partial class ContentButtonHandler : IContentButtonHandler
 		[nameof(IButtonStroke.CornerRadius)] = MapCornerRadius,
 		[nameof(IContentButton.Content)] = MapContent,
 
-#if ANDROID || MACCATALYST || WINDOWS
+#if ANDROID || MACCATALYST || WINDOWS || IOS
 		[nameof(IContentButton.Background)] = MapBackground,
 #endif
 	};

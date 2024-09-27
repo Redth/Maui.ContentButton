@@ -10,108 +10,68 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 {
 	static readonly UIControlState[] ControlStates = { UIControlState.Normal, UIControlState.Highlighted, UIControlState.Disabled };
 
-	public readonly static Thickness DefaultPadding = new Thickness(12, 7);
+	//public readonly static Thickness DefaultPadding = new Thickness(12, 7);
 
-	// Because we can't inherit from Button we use the container to handle
-	// Life cycle events and things like monitoring focus changed
-	public override bool NeedsContainer => true;
-
+	public const int ContentButtonHandlerContentViewTag = 23123;
 
 	protected override UIButton CreatePlatformView()
 	{
-		var button = new UIButton(UIButtonType.System);
-		SetControlPropertiesFromProxy(button);
-
-		button.ClipsToBounds = true;
-		button.AddSubview(new MauiButtonContentView
-		{
+		var button = new MauiAppleButton {
 			CrossPlatformLayout = VirtualView,
-		});
+			ClipsToBounds = true,
+			Configuration = UIButtonConfiguration.BorderedButtonConfiguration,
+			TouchesHandlers = new MauiAppleButtonTouches(VirtualView.Pressed, VirtualView.Released, VirtualView.Clicked)
+		};
+
+		SetControlPropertiesFromProxy(button);
 
 		return button;
 	}
 
-	readonly ButtonEventProxy _proxy = new ButtonEventProxy();
-
-	protected override void SetupContainer()
-	{
-		base.SetupContainer();
-
-		// We need to use reflection on this internal only property
-		(ContainerView as WrapperView)?.SetCrossPlatformLayout(VirtualView);
-	}
-
-	protected override void ConnectHandler(MButton platformView)
-	{
-		_proxy.Connect(VirtualView, platformView);
-
-		base.ConnectHandler(platformView);
-	}
-
-	protected override void DisconnectHandler(MButton platformView)
-	{
-		_proxy.Disconnect(platformView);
-
-		base.DisconnectHandler(platformView);
-	}
-
-#if MACCATALYST
 	public static void MapBackground(IContentButtonHandler handler, IContentButton button)
 	{
-		//If this is a Mac optimized interface
-		if (OperatingSystem.IsIOSVersionAtLeast(15) && UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Mac)
+		if (handler.PlatformView.Configuration is not null)
 		{
-			var config = handler.PlatformView?.Configuration ?? UIButtonConfiguration.BorderedButtonConfiguration;
-			if (button?.Background is Paint paint)
-			{
-				if (paint is SolidPaint solidPaint)
-				{
-					Color backgroundColor = solidPaint.Color;
-
-					if (backgroundColor == null)
-					{
-						if (OperatingSystem.IsIOSVersionAtLeast(13))
-							config.BaseBackgroundColor = UIColor.SystemBackground;
-						else
-							config.BaseBackgroundColor = UIColor.White;
-					}
-					else
-					{
-						config.BaseBackgroundColor = backgroundColor.ToPlatform();
-					}
-
-				}
-			}
-			if (handler.PlatformView != null)
-				handler.PlatformView.Configuration = config;
-		}
-		else
-		{
-			handler.PlatformView?.UpdateBackground(button);
+			var con = handler.PlatformView.Configuration;
+			con.Background.BackgroundColor = button.Background?.ToColor()?.ToPlatform();
+			handler.PlatformView.Configuration = con;
 		}
 	}
-#endif
 
 	public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)
 	{
-		handler.PlatformView?.UpdateStrokeColor(buttonStroke);
+		if (handler.PlatformView.Configuration is not null)
+		{
+			var con = handler.PlatformView.Configuration;
+			con.Background.StrokeColor = buttonStroke.StrokeColor?.ToPlatform();
+			handler.PlatformView.Configuration = con;
+		}
 	}
 
 	public static void MapStrokeThickness(IContentButtonHandler handler, IButtonStroke buttonStroke)
 	{
-		handler.PlatformView?.UpdateStrokeThickness(buttonStroke);
+		if (handler.PlatformView.Configuration is not null)
+		{
+			var con = handler.PlatformView.Configuration;
+			con.Background.StrokeWidth = (float)buttonStroke.StrokeThickness;
+			handler.PlatformView.Configuration = con;
+		}
 	}
 
 	public static void MapCornerRadius(IContentButtonHandler handler, IButtonStroke buttonStroke)
 	{
-		handler.PlatformView?.UpdateCornerRadius(buttonStroke);
+		if (handler.PlatformView.Configuration is not null)
+		{
+			var con = handler.PlatformView.Configuration;
+			con.Background.CornerRadius = buttonStroke.CornerRadius;
+			handler.PlatformView.Configuration = con;
+		}
 	}
 
 	// public static void MapPadding(IContentButtonHandler handler, IPadding padding)
 	// {
 	// 	handler.PlatformView?.UpdatePadding(padding.Padding, DefaultPadding);
 	// }
-
 
 	static void SetControlPropertiesFromProxy(UIButton platformView)
 	{
@@ -121,68 +81,28 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 		}
 	}
 
-	class ButtonEventProxy
-	{
-		WeakReference<IContentButton>? _virtualView;
-
-		IContentButton? VirtualView => _virtualView is not null && _virtualView.TryGetTarget(out var v) ? v : null;
-
-		public void Connect(IContentButton virtualView, UIButton platformView)
-		{
-			_virtualView = new(virtualView);
-
-			platformView.TouchUpInside += OnButtonTouchUpInside;
-			platformView.TouchUpOutside += OnButtonTouchUpOutside;
-			platformView.TouchDown += OnButtonTouchDown;
-		}
-
-		public void Disconnect(UIButton platformView)
-		{
-			_virtualView = null;
-
-			platformView.TouchUpInside -= OnButtonTouchUpInside;
-			platformView.TouchUpOutside -= OnButtonTouchUpOutside;
-			platformView.TouchDown -= OnButtonTouchDown;
-		}
-
-		void OnButtonTouchUpInside(object? sender, EventArgs e)
-		{
-			if (VirtualView is IContentButton virtualView)
-			{
-				virtualView.Released();
-				virtualView.Clicked();
-			}
-		}
-
-		void OnButtonTouchUpOutside(object? sender, EventArgs e)
-		{
-			VirtualView?.Released();
-		}
-
-		void OnButtonTouchDown(object? sender, EventArgs e)
-		{
-			VirtualView?.Pressed();
-		}
-	}
-
 	public static void MapContent(IContentButtonHandler handler, IContentButton view)
 	{
 		_ = handler.PlatformView ?? throw new InvalidOperationException($"{nameof(PlatformView)} should have been set by base class.");
 		_ = handler.VirtualView ?? throw new InvalidOperationException($"{nameof(VirtualView)} should have been set by base class.");
 		_ = handler.MauiContext ?? throw new InvalidOperationException($"{nameof(MauiContext)} should have been set by base class.");
 
-		var contentSubview = handler.PlatformView.FindDescendantView<MauiButtonContentView>();
-		if (contentSubview is not null)
+		// Remove the known content subview (by tag) if it exists
+		for (var i = 0; i < handler.PlatformView.Subviews.Length; i++)
 		{
-			contentSubview.ClearSubviews();
-
-			if (handler.VirtualView.PresentedContent is IView presentedView)
+			var subview = handler.PlatformView.Subviews[i];
+			if (subview.Tag == ContentButtonHandlerContentViewTag)
 			{
-				var inner = presentedView.ToPlatform(handler.MauiContext);
-				contentSubview.AddSubview(inner);
+				subview.RemoveFromSuperview();
+				break;
 			}
+		}
 
-			contentSubview.SetNeedsLayout();
+		if (handler.VirtualView.PresentedContent is IView presentedView)
+		{
+			var inner = presentedView.ToPlatform(handler.MauiContext);
+			inner.Tag = ContentButtonHandlerContentViewTag;
+			handler.PlatformView.AddSubview(inner);
 		}
 	}
 }

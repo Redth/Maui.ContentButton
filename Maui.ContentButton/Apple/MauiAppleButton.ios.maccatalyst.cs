@@ -1,11 +1,12 @@
 #if IOS || MACCATALYST
-using CoreGraphics;
-using Microsoft.Maui.Platform;
 using UIKit;
+using CoreGraphics;
+using Foundation;
+using Microsoft.Maui.Platform;
 
 namespace MauiContentButton;
 
-public class MauiButtonContentView : UIView, ICrossPlatformLayoutBacking
+public class MauiAppleButton : UIButton, ICrossPlatformLayoutBacking
 {
 	bool _fireSetNeedsLayoutOnParentWhenWindowAttached;
 
@@ -13,6 +14,8 @@ public class MauiButtonContentView : UIView, ICrossPlatformLayoutBacking
 	double _lastMeasureWidth = double.NaN;
 
 	WeakReference<ICrossPlatformLayout>? _crossPlatformLayoutReference;
+
+	public MauiAppleButtonTouches? TouchesHandlers { get; set; }
 
 	protected bool IsMeasureValid(double widthConstraint, double heightConstraint)
 	{
@@ -78,10 +81,7 @@ public class MauiButtonContentView : UIView, ICrossPlatformLayoutBacking
 			return;
 		}
 
-		// IMPORTANT: Use the superview's bounds for the measurement constraints
-		// This is the big change from the MauiView implementation, since we want to layout
-		// and then measure if needed, based on the superview/container bounds
-		var bounds = (Superview?.Bounds ?? Bounds).ToRectangle();
+		var bounds = Bounds.ToRectangle();
 
 		var widthConstraint = bounds.Width;
 		var heightConstraint = bounds.Height;
@@ -133,5 +133,33 @@ public class MauiButtonContentView : UIView, ICrossPlatformLayoutBacking
 		//_movedToWindow?.Invoke(this, EventArgs.Empty);
 		TryToInvalidateSuperView(true);
 	}
+
+
+	public override void TouchesBegan(NSSet touches, UIEvent? evt)
+	{
+		base.TouchesBegan(touches, evt);
+
+		TouchesHandlers?.PressedHandler?.Invoke();
+	}
+
+	public override void TouchesEnded(NSSet touches, UIEvent? evt)
+	{
+		base.TouchesEnded(touches, evt);
+
+		TouchesHandlers?.ReleasedHandler?.Invoke();
+
+		if (touches?.FirstOrDefault() is UITouch touch)
+		{
+			var point = touch.LocationInView(this);
+			if (this.PointInside(point, evt)) {
+				// didTouchUpInside
+				TouchesHandlers?.ClickedHandler?.Invoke();
+			}
+		}
+	}
+}
+
+public record MauiAppleButtonTouches(Action PressedHandler, Action ReleasedHandler, Action ClickedHandler)
+{
 }
 #endif
