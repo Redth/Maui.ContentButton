@@ -112,6 +112,5 @@ You may want to add a style to your app's `Resources/Styles/Styles.xaml` to make
 
 ## Known Issues
 - Due to some recent changes in MAUI itself, this currently requires .NET MAUI 8.0.90 (SR9) or newer
-- Changing `Background` instead of `BackgroundColor` does not always work correctly on every platform
-- No Padding property on the Button itself yet, so you need to set a margin on the inner content instead
 - Android uses `MaterialCardView` which doesn't have a simple way to set a complex background, so currently it can only set a background color (no gradients, etc), but you still get ripples and everything as a result
+- iOS uses the simple UIButtonConfiguration APIs to set properties, so currently only solid color backgrounds are supported like on Android
