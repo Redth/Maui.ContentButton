@@ -63,7 +63,7 @@ public class MauiMaterialCardView : MaterialCardView, ICrossPlatformLayoutBackin
 		var heightMode = MeasureSpec.GetMode(heightMeasureSpec);
 
 		var measure = CrossPlatformMeasure(deviceIndependentWidth, deviceIndependentHeight);
-
+		
 		// If the measure spec was exact, we should return the explicit size value, even if the content
 		// measure came out to a different size
 		var width = widthMode == MeasureSpecMode.Exactly ? deviceIndependentWidth : measure.Width;
