@@ -23,14 +23,15 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 		{
 			if (bindableObject is ContentButton contentButton)
 			{
+				
 				if (oldValue is View oldView)
 				{
-					VisualDiagnostics.OnChildRemoved(contentButton, oldView, 0);
+					contentButton.RemoveLogicalChild(oldView);
 				}
 
 				if (newValue is View newView)
 				{
-					VisualDiagnostics.OnChildAdded(contentButton, newView, 0);
+					contentButton.AddLogicalChild(newView);
 				}
 			}
 		});
