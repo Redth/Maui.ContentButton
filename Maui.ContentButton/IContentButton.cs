@@ -9,7 +9,7 @@ using PlatformButtonView = object;
 
 namespace MauiContentButton;
 
-public interface IContentButton : IView, IButtonStroke, ICrossPlatformLayout //, IPadding
+public interface IContentButton : IView, IButtonStroke, ICrossPlatformLayout, IPadding
 {
 	/// <summary>
 	/// Occurs when the button is pressed.

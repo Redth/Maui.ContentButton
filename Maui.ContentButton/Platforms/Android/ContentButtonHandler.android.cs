@@ -115,18 +115,18 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 		}
 	}
 
-	// public static void MapPadding(IContentButtonHandler handler, IPadding padding)
-	// {
-	// 	if (handler.PlatformView is not null)
-	// 	{
-	// 		var density = (handler.PlatformView.Resources?.DisplayMetrics?.Density ?? 1f);
-	// 		handler.PlatformView.SetContentPadding(
-	// 			(int)(padding.Padding.Left * density),
-	// 			(int)(padding.Padding.Top * density),
-	// 			(int)(padding.Padding.Right * density),
-	// 			(int)(padding.Padding.Bottom * density));
-	// 	}
-	// }
+	public static void MapPadding(IContentButtonHandler handler, IPadding padding)
+	{
+		if (handler.PlatformView is not null)
+		{
+			var density = (handler.PlatformView.Resources?.DisplayMetrics?.Density ?? 1f);
+			handler.PlatformView.SetContentPadding(
+				(int)(padding.Padding.Left * density),
+				(int)(padding.Padding.Top * density),
+				(int)(padding.Padding.Right * density),
+				(int)(padding.Padding.Bottom * density));
+		}
+	}
 
 	static bool OnTouch(IContentButton? button, AView? v, MotionEvent? e)
 	{

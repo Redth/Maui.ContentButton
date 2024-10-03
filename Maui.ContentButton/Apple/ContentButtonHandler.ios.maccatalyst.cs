@@ -10,7 +10,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 {
 	static readonly UIControlState[] ControlStates = { UIControlState.Normal, UIControlState.Highlighted, UIControlState.Disabled };
 
-	//public readonly static Thickness DefaultPadding = new Thickness(12, 7);
+	public readonly static Thickness DefaultPadding = new Thickness(12, 7);
 
 	public const int ContentButtonHandlerContentViewTag = 23123;
 
@@ -27,6 +27,8 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 
 		return button;
 	}
+	
+	
 
 	public static void MapBackground(IContentButtonHandler handler, IContentButton button)
 	{
@@ -68,10 +70,10 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 		}
 	}
 
-	// public static void MapPadding(IContentButtonHandler handler, IPadding padding)
-	// {
-	// 	handler.PlatformView?.UpdatePadding(padding.Padding, DefaultPadding);
-	// }
+	public static void MapPadding(IContentButtonHandler handler, IPadding padding)
+	{
+		handler.PlatformView?.UpdatePadding(padding.Padding, DefaultPadding);
+	}
 
 	static void SetControlPropertiesFromProxy(UIButton platformView)
 	{

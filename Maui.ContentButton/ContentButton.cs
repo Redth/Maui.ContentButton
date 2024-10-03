@@ -17,24 +17,24 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 {
 
 	/// <summary>Bindable property for <see cref="Content"/>.</summary>
-	public static readonly BindableProperty ContentProperty 
+	public static readonly BindableProperty ContentProperty
 		= BindableProperty.Create(nameof(Content), typeof(View), typeof(ContentView), null,
-		propertyChanged: (bindableObject, oldValue, newValue) =>
-		{
-			if (bindableObject is ContentButton contentButton)
+			propertyChanged: (bindableObject, oldValue, newValue) =>
 			{
-				
-				if (oldValue is View oldView)
+				if (bindableObject is ContentButton contentButton)
 				{
-					contentButton.RemoveLogicalChild(oldView);
-				}
 
-				if (newValue is View newView)
-				{
-					contentButton.AddLogicalChild(newView);
+					if (oldValue is View oldView)
+					{
+						contentButton.RemoveLogicalChild(oldView);
+					}
+
+					if (newValue is View newView)
+					{
+						contentButton.AddLogicalChild(newView);
+					}
 				}
-			}
-		});
+			});
 
 	public View Content
 	{
@@ -60,23 +60,21 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 	IView IContentButton.PresentedContent => Content;
 
 
-	// public static readonly BindableProperty PaddingProperty =
-	// 	BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(),
-	// 	propertyChanged: (bindable, oldValue, newValue) =>
-	// 	{
-	// 		if (bindable is ContentButton contentButton)
-	// 		{
-	// 			contentButton.InvalidateMeasure();
-	// 		}
-	// 	});
+	public static readonly BindableProperty PaddingProperty =
+		BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(ContentButton), new Thickness(),
+			propertyChanged: (bindable, oldValue, newValue) =>
+			{
+				if (bindable is ContentButton contentButton)
+				{
+					contentButton.InvalidateMeasure();
+				}
+			});
 
-	// public Thickness Padding
-	// {
-	// 	get => (Thickness)GetValue(PaddingProperty);
-	// 	set => SetValue(PaddingProperty, value);
-	// }
-
-
+	public Thickness Padding
+	{
+		get => (Thickness)GetValue(PaddingProperty);
+		set => SetValue(PaddingProperty, value);
+	}
 
 	public const int DefaultCornerRadius = -1;
 
@@ -89,7 +87,8 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 
 	/// <summary>Bindable property for <see cref="IBorderElement.CornerRadius"/>.</summary>
 	public static readonly BindableProperty CornerRadiusProperty =
-		BindableProperty.Create(nameof(IBorderElement.CornerRadius), typeof(int), typeof(IBorderElement), defaultValue: DefaultCornerRadius);
+		BindableProperty.Create(nameof(IBorderElement.CornerRadius), typeof(int), typeof(IBorderElement),
+			defaultValue: DefaultCornerRadius);
 
 
 
@@ -111,7 +110,8 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 		set => SetValue(CornerRadiusProperty, value);
 	}
 
-	static readonly BindablePropertyKey IsPressedPropertyKey = BindableProperty.CreateReadOnly(nameof(IsPressed), typeof(bool), typeof(ContentButton), default(bool));
+	static readonly BindablePropertyKey IsPressedPropertyKey =
+		BindableProperty.CreateReadOnly(nameof(IsPressed), typeof(bool), typeof(ContentButton), default(bool));
 
 	public static readonly BindableProperty IsPressedProperty = IsPressedPropertyKey.BindableProperty;
 
@@ -189,4 +189,16 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 		set => SetValue(CommandParameterProperty, value);
 	}
 
+	public Size CrossPlatformArrange(Rect bounds)
+	{
+		var inset = bounds.Inset(StrokeThickness);
+		this.ArrangeContent(inset);
+		return bounds.Size;
+	}
+
+	public Size CrossPlatformMeasure(double widthConstraint, double heightConstraint)
+	{
+		var inset = Padding + StrokeThickness;
+		return this.MeasureContent( inset, widthConstraint, heightConstraint);
+	}
 }

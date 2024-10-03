@@ -20,7 +20,7 @@ public partial class ContentButtonHandler : IContentButtonHandler
 {
 	public static IPropertyMapper<IContentButton, IContentButtonHandler> Mapper = new PropertyMapper<IContentButton, IContentButtonHandler>(ViewMapper, ViewHandler.ViewMapper)
 	{
-		//[nameof(IPadding.Padding)] = MapPadding,
+		[nameof(IPadding.Padding)] = MapPadding,
 		[nameof(IButtonStroke.StrokeThickness)] = MapStrokeThickness,
 		[nameof(IButtonStroke.StrokeColor)] = MapStrokeColor,
 		[nameof(IButtonStroke.CornerRadius)] = MapCornerRadius,
