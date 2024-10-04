@@ -1,7 +1,8 @@
 # Maui.ContentButton
 Button that can take any content inside of it while still acting like a native button
 
-![NuGet Downloads](https://img.shields.io/nuget/dt/Plugin.Maui.ContentButton?style=flat&logo=nuget&label=Plugin.Maui.ContentButton&color=0b6cff)
+![NuGet Version](https://img.shields.io/nuget/v/Plugin.Maui.ContentButton?style=flat&logo=nuget&logoColor=ffffff&color=0b6cff)
+
 
 
 | Android | Windows | iOS |
