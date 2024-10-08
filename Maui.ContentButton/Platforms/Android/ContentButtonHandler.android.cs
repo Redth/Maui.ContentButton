@@ -87,7 +87,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 		// TODO: Handle more complex backgrounds than a single color (eg: gradient)
 		if (handler.PlatformView is not null && view.Background is not null)
 		{
-			handler.PlatformView.UpdateMauiRippleDrawableBackground(view.Background, view);
+			handler.PlatformView.UpdateButtonBackground(view);
 			//handler.PlatformView.SetBackground(view.Background.ToDrawable(handler.MauiContext.Context));
 			//handler.PlatformView.SetCardBackgroundColor(view.Background.ToColor().ToAndroid());
 		}
@@ -96,7 +96,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 	public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)
 	{
 		if (handler.PlatformView is not null && buttonStroke.StrokeColor is not null)
-			handler.PlatformView.UpdateMauiRippleDrawableStroke(buttonStroke);
+			handler.PlatformView.UpdateButtonStroke(buttonStroke);
 		//handler.PlatformView.StrokeColor = buttonStroke.StrokeColor.ToAndroid();
 	}
 
@@ -104,7 +104,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 	{
 		if (handler.PlatformView is not null)
 		{
-			handler.PlatformView.UpdateMauiRippleDrawableStroke(buttonStroke);
+			handler.PlatformView.UpdateButtonStroke(buttonStroke);
 			// var density = handler.PlatformView.Resources?.DisplayMetrics?.Density ?? 1f;
 			// handler.PlatformView.StrokeWidth = (int)Math.Ceiling(buttonStroke.StrokeThickness * density);
 		}
@@ -118,8 +118,6 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 
 			handler.PlatformView.ShapeAppearanceModel = handler.PlatformView.ShapeAppearanceModel.ToBuilder()
 				.SetAllCorners(CornerFamily.Rounded, density * buttonStroke.CornerRadius).Build();
-			
-			
 		}
 	}
 
