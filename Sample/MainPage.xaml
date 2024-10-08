@@ -29,6 +29,14 @@
                 x:Name="CounterBtn"
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Fill">
+                <mcb:ContentButton.Background>
+                    <LinearGradientBrush
+                        StartPoint="0,0"
+                        EndPoint="1,1">
+                        <GradientStop Color="{DynamicResource Primary}" Offset="0.0" />
+                        <GradientStop Color="{DynamicResource Secondary}" Offset="1.0" />
+                    </LinearGradientBrush>
+                </mcb:ContentButton.Background>
                 <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="*,*">
                     <Image
                         Source="dotnet_bot.png"
