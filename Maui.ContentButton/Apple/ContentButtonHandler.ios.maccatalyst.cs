@@ -34,9 +34,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 	{
 		if (handler.PlatformView.Configuration is not null)
 		{
-			var con = handler.PlatformView.Configuration;
-			con.Background.BackgroundColor = button.Background?.ToColor()?.ToPlatform();
-			handler.PlatformView.Configuration = con;
+			handler.PlatformView.UpdateBackground(button.Background, button);
 		}
 	}
 
@@ -44,9 +42,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 	{
 		if (handler.PlatformView.Configuration is not null)
 		{
-			var con = handler.PlatformView.Configuration;
-			con.Background.StrokeColor = buttonStroke.StrokeColor?.ToPlatform();
-			handler.PlatformView.Configuration = con;
+			handler.PlatformView.UpdateStrokeColor(buttonStroke);
 		}
 	}
 
@@ -54,9 +50,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 	{
 		if (handler.PlatformView.Configuration is not null)
 		{
-			var con = handler.PlatformView.Configuration;
-			con.Background.StrokeWidth = (float)buttonStroke.StrokeThickness;
-			handler.PlatformView.Configuration = con;
+			handler.PlatformView.UpdateStrokeThickness(buttonStroke);
 		}
 	}
 
@@ -64,9 +58,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 	{
 		if (handler.PlatformView.Configuration is not null)
 		{
-			var con = handler.PlatformView.Configuration;
-			con.Background.CornerRadius = buttonStroke.CornerRadius;
-			handler.PlatformView.Configuration = con;
+			handler.PlatformView.UpdateCornerRadius(buttonStroke);
 		}
 	}
 
