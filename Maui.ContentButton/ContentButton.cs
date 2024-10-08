@@ -144,17 +144,17 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 	/// <summary>
 	/// Occurs when the button is clicked/tapped.
 	/// </summary>
-	public event EventHandler Clicked;
+	public event EventHandler? Clicked;
 
 	/// <summary>
 	/// Occurs when the button is pressed.
 	/// </summary>
-	public event EventHandler Pressed;
+	public event EventHandler? Pressed;
 
 	/// <summary>
 	/// Occurs when the button is released.
 	/// </summary>
-	public event EventHandler Released;
+	public event EventHandler? Released;
 
 	public const string PressedVisualState = "Pressed";
 
