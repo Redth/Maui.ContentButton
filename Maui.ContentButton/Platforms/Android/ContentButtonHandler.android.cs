@@ -1,6 +1,8 @@
 ﻿using Android.Views;
 using Google.Android.Material.Shape;
+using Maui.ContentButton;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using AButton = MauiContentButton.MauiMaterialCardView;
@@ -85,22 +87,26 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 		// TODO: Handle more complex backgrounds than a single color (eg: gradient)
 		if (handler.PlatformView is not null && view.Background is not null)
 		{
-			handler.PlatformView.SetCardBackgroundColor(view.Background.ToColor().ToAndroid());
+			handler.PlatformView.UpdateMauiRippleDrawableBackground(view.Background, view);
+			//handler.PlatformView.SetBackground(view.Background.ToDrawable(handler.MauiContext.Context));
+			//handler.PlatformView.SetCardBackgroundColor(view.Background.ToColor().ToAndroid());
 		}
 	}
 
 	public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)
 	{
 		if (handler.PlatformView is not null && buttonStroke.StrokeColor is not null)
-			handler.PlatformView.StrokeColor = buttonStroke.StrokeColor.ToAndroid();
+			handler.PlatformView.UpdateMauiRippleDrawableStroke(buttonStroke);
+		//handler.PlatformView.StrokeColor = buttonStroke.StrokeColor.ToAndroid();
 	}
 
 	public static void MapStrokeThickness(IContentButtonHandler handler, IButtonStroke buttonStroke)
 	{
 		if (handler.PlatformView is not null)
 		{
-			var density = handler.PlatformView.Resources?.DisplayMetrics?.Density ?? 1f;
-			handler.PlatformView.StrokeWidth = (int)Math.Ceiling(buttonStroke.StrokeThickness * density);
+			handler.PlatformView.UpdateMauiRippleDrawableStroke(buttonStroke);
+			// var density = handler.PlatformView.Resources?.DisplayMetrics?.Density ?? 1f;
+			// handler.PlatformView.StrokeWidth = (int)Math.Ceiling(buttonStroke.StrokeThickness * density);
 		}
 	}
 
@@ -112,6 +118,8 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 
 			handler.PlatformView.ShapeAppearanceModel = handler.PlatformView.ShapeAppearanceModel.ToBuilder()
 				.SetAllCorners(CornerFamily.Rounded, density * buttonStroke.CornerRadius).Build();
+			
+			
 		}
 	}
 
