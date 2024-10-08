@@ -78,30 +78,26 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 
 	public const int DefaultCornerRadius = -1;
 
-	public static readonly BindableProperty BorderColorProperty =
-		BindableProperty.Create(nameof(IBorderElement.BorderColor), typeof(Color), typeof(IBorderElement), null);
+	public static readonly BindableProperty StrokeColorProperty =
+		BindableProperty.Create(nameof(IButtonStroke.StrokeColor), typeof(Color), typeof(IButtonStroke), null);
 
-	/// <summary>Bindable property for <see cref="IBorderElement.BorderWidth"/>.</summary>
-	public static readonly BindableProperty BorderWidthProperty =
-		BindableProperty.Create(nameof(IBorderElement.BorderWidth), typeof(double), typeof(IBorderElement), -1d);
+	public static readonly BindableProperty StrokeThicknessProperty =
+		BindableProperty.Create(nameof(IButtonStroke.StrokeThickness), typeof(double), typeof(IButtonStroke), -1d);
 
-	/// <summary>Bindable property for <see cref="IBorderElement.CornerRadius"/>.</summary>
 	public static readonly BindableProperty CornerRadiusProperty =
-		BindableProperty.Create(nameof(IBorderElement.CornerRadius), typeof(int), typeof(IBorderElement),
+		BindableProperty.Create(nameof(IButtonStroke.CornerRadius), typeof(int), typeof(IButtonStroke),
 			defaultValue: DefaultCornerRadius);
-
-
 
 	public Color StrokeColor
 	{
-		get => (Color)GetValue(BorderColorProperty);
-		set => SetValue(BorderColorProperty, value);
+		get => (Color)GetValue(StrokeColorProperty);
+		set => SetValue(StrokeColorProperty, value);
 	}
 
 	public double StrokeThickness
 	{
-		get => (double)GetValue(BorderWidthProperty);
-		set => SetValue(BorderWidthProperty, value);
+		get => (double)GetValue(StrokeThicknessProperty);
+		set => SetValue(StrokeThicknessProperty, value);
 	}
 
 	public int CornerRadius
