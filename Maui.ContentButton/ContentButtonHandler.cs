@@ -14,7 +14,6 @@ using PlatformButtonView = object;
 
 namespace MauiContentButton;
 
-
 // All the code in this file is included in all platforms.
 public partial class ContentButtonHandler : IContentButtonHandler
 {
@@ -25,10 +24,7 @@ public partial class ContentButtonHandler : IContentButtonHandler
 		[nameof(IButtonStroke.StrokeColor)] = MapStrokeColor,
 		[nameof(IButtonStroke.CornerRadius)] = MapCornerRadius,
 		[nameof(IContentButton.Content)] = MapContent,
-
-#if ANDROID || MACCATALYST || WINDOWS || IOS
 		[nameof(IContentButton.Background)] = MapBackground,
-#endif
 	};
 
 	public static CommandMapper<IButton, IButtonHandler> CommandMapper = new(ViewCommandMapper);
