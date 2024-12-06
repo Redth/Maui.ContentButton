@@ -41,11 +41,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="9.0.0" PrivateAssets="All"/>
-	</ItemGroup>
-
-	<ItemGroup Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
-		<Compile Remove="**\**\*.standard.cs" />
-		<None Include="**\**\*.standard.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
 	</ItemGroup>
 </Project>
