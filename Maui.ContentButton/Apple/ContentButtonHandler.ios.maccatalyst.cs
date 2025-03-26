@@ -19,7 +19,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 		var button = new MauiAppleButton {
 			CrossPlatformLayout = VirtualView,
 			ClipsToBounds = true,
-			Configuration = UIButtonConfiguration.BorderedButtonConfiguration,
+			Configuration = UIButtonConfiguration.BorderlessButtonConfiguration,
 			TouchesHandlers = new MauiAppleButtonTouches(VirtualView.Pressed, VirtualView.Released, VirtualView.Clicked)
 		};
 
