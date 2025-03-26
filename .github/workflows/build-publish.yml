@@ -20,6 +20,8 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
+    - name: Setup Workloads
+      run: dotnet workload install maui --version 8.0.407
     - name: Build
       run: dotnet build --configuration Release
     - name: Package NuGets
