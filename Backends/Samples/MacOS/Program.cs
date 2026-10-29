@@ -68,7 +68,7 @@ public class SampleAppDelegate : MacOSMauiApplication
 		var native = (MauiAppKitContentButton)button.ToMacOSPlatform(new MauiContext(Services));
 		if (button.Handler is not MacOSContentButtonHandler handler)
 			throw new InvalidOperationException("The AppKit ContentButton handler was not registered.");
-		SmokeTests.Run(button, handler, () => native.PerformClick(native), () => native.Subviews.Length);
+		SmokeTests.Run(button, handler, () => native.PerformClick(native), () => native.Subviews.Length, () => native.Enabled);
 		Console.WriteLine("AppKit application startup smoke test passed.");
 		Environment.Exit(0);
 	}

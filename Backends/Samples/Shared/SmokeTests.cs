@@ -17,7 +17,7 @@ static class SmokeTests
 		BackgroundColor = Colors.LightBlue,
 	};
 
-	public static void Run(ContentButton button, IViewHandler handler, Action activate, Func<int> childCount)
+	public static void Run(ContentButton button, IViewHandler handler, Action activate, Func<int> childCount, Func<bool> isEnabled)
 	{
 		Require(handler is IContentButtonHandler contentHandler && contentHandler.VirtualView == button,
 			"Desktop handlers must expose the shared ContentButton handler contract.");
@@ -42,6 +42,29 @@ static class SmokeTests
 		activate();
 		Require(events.Count == 0, "Disabled native buttons must not activate.");
 		button.IsEnabled = true;
+
+		var canExecute = false;
+		var command = new Command(() => events.Add("command"), () => canExecute);
+		button.Command = command;
+		Require(!button.IsEnabled && !isEnabled(), "A non-executable command must disable the native button.");
+		activate();
+		Require(events.Count == 0, "A non-executable command must block native activation.");
+
+		canExecute = true;
+		command.ChangeCanExecute();
+		Require(button.IsEnabled && isEnabled(), "Command eligibility must re-enable the native button.");
+		activate();
+		Require(events.SequenceEqual(["pressed", "released", "clicked", "command"]),
+			"Re-enabled commands must activate once with the existing event ordering.");
+		events.Clear();
+
+		canExecute = false;
+		command.ChangeCanExecute();
+		Require(!button.IsEnabled && !isEnabled(), "Command notifications must disable the native button.");
+		activate();
+		Require(events.Count == 0, "Command notifications must block subsequent native activation.");
+		button.Command = null;
+		Require(button.IsEnabled && isEnabled(), "Removing a command must restore native enabled state.");
 
 		var previous = button.Content;
 		button.Content = new Label { Text = "Replacement" };

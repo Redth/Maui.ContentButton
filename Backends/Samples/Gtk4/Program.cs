@@ -37,7 +37,8 @@ class Program : GtkMauiApplication
 					g_signal_emit_by_name(native.Handle.DangerousGetHandle(), "clicked");
 					native.UnsetStateFlags(Gtk.StateFlags.Active);
 				},
-				() => native.GetChild()?.GetFirstChild() is null ? 0 : 1);
+				() => native.GetChild()?.GetFirstChild() is null ? 0 : 1,
+				() => native.GetSensitive());
 			return;
 		}
 		new Program().Run(args);
