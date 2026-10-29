@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ripple_test_color">#66FFFFFF</color>
+    <color name="ripple_test_focus_color">#44FFFFFF</color>
+</resources>

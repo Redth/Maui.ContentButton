@@ -7,6 +7,19 @@
         public MainPage()
         {
             InitializeComponent();
+#if ANDROID && DEBUG
+            Loaded += async (_, _) => await RippleSmokeTests.RunAsync(CounterBtn);
+#endif
+        }
+
+        private void OnRippleOverrideClicked(object sender, EventArgs e)
+        {
+            RippleOverrideButton.RippleColor = RippleOverrideButton.RippleColor is null
+                ? Color.FromArgb("#66FFFFFF")
+                : null;
+            RippleOverrideLabel.Text = RippleOverrideButton.RippleColor is null
+                ? "Native default: tap to set white ripple"
+                : "White ripple: tap to restore native default";
         }
 
         private void OnRadiusTestClicked(object sender, EventArgs e)

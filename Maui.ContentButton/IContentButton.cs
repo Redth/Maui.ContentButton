@@ -12,6 +12,11 @@ namespace MauiContentButton;
 public interface IContentButton : IView, IButtonStroke, ICrossPlatformLayout, IPadding
 {
 	/// <summary>
+	/// Gets the Android ripple color, or null to use the current native theme's default.
+	/// </summary>
+	Color? RippleColor => null;
+
+	/// <summary>
 	/// Occurs when the button is pressed.
 	/// </summary>
 	void Pressed();

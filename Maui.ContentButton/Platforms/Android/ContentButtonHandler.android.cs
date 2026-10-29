@@ -45,8 +45,10 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 
 		platformView.FocusChange += OnNativeViewFocusChange;
 		platformView.LayoutChange += OnPlatformViewLayoutChange;
+		platformView.ThemeChanged += OnPlatformViewThemeChanged;
 
 		base.ConnectHandler(platformView);
+		platformView.UpdateButtonRippleColor(VirtualView);
 	}
 
 
@@ -63,6 +65,7 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 
 		platformView.FocusChange -= OnNativeViewFocusChange;
 		platformView.LayoutChange -= OnPlatformViewLayoutChange;
+		platformView.ThemeChanged -= OnPlatformViewThemeChanged;
 
 		base.DisconnectHandler(platformView);
 	}
@@ -85,12 +88,32 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, AButton>
 	public static void MapBackground(IContentButtonHandler handler, IContentButton view)
 	{
 		// TODO: Handle more complex backgrounds than a single color (eg: gradient)
-		if (handler.PlatformView is not null && view.Background is not null)
+		if (handler.PlatformView is not null)
 		{
 			handler.PlatformView.UpdateButtonBackground(view);
-			//handler.PlatformView.SetBackground(view.Background.ToDrawable(handler.MauiContext.Context));
-			//handler.PlatformView.SetCardBackgroundColor(view.Background.ToColor().ToAndroid());
+			handler.PlatformView.UpdateButtonRippleColor(view);
 		}
+	}
+
+	public static void MapRippleColor(IContentButtonHandler handler, IContentButton view)
+	{
+		handler.PlatformView?.UpdateButtonRippleColor(view);
+	}
+
+	void OnPlatformViewThemeChanged(object? sender, EventArgs e)
+	{
+		if (sender is not AButton platformView)
+			return;
+
+		// Let the Activity/AppCompat finish applying the new theme first.
+		var virtualView = VirtualView;
+		platformView.Post(() =>
+		{
+			if (ReferenceEquals(PlatformView, platformView) &&
+				ReferenceEquals(VirtualView, virtualView) &&
+				ReferenceEquals(platformView.CrossPlatformLayout, virtualView))
+				platformView.UpdateButtonRippleColor(virtualView);
+		});
 	}
 
 	public static void MapStrokeColor(IContentButtonHandler handler, IButtonStroke buttonStroke)

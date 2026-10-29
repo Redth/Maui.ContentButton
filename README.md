@@ -176,6 +176,63 @@ For automatic disabling during asynchronous work, the command must return `false
 `CanExecute` while busy and raise `CanExecuteChanged` when eligibility changes. The button
 does not infer busy state or require a particular MVVM toolkit.
 
+## Android ripple colors
+
+On Android, the default ripple follows the current native `MaterialCardView` theme/style,
+including after a system light/dark change without restarting the app. A theme can supply
+`rippleColor` through `materialCardViewStyle`; otherwise Material uses `colorControlHighlight`.
+Both the card's foreground ripple (visible over nested content) and the MAUI background
+ripple are refreshed without replacing the button or its content.
+
+Set the optional `RippleColor` property to override this default:
+
+```xml
+<mcb:ContentButton
+    BackgroundColor="Gray"
+    RippleColor="{AppThemeBinding Light=#44000000, Dark=#66FFFFFF}">
+    <Label Text="Theme-aware feedback" TextColor="White" />
+</mcb:ContentButton>
+```
+
+The color's alpha is used as supplied; no additional opacity multiplier is applied.
+`Transparent` explicitly hides the ripple. Set `RippleColor` back to `null` (or clear
+`RippleColorProperty`) to restore the **current** native theme default.
+The property supports bindings and dynamic resources, but affects Android only; other
+platforms retain their native feedback.
+
+Native theme defaults do not necessarily contrast with every image or view nested inside
+a content button. Use an explicit color for content that needs different feedback. Also,
+setting MAUI's `Application.UserAppTheme` does not necessarily change Android's native theme:
+use `AppThemeBinding` when you want the ripple to follow that application-level choice.
+
+The sample's **Android ripple colors** section compares native, solid, opaque-child, and
+gradient backgrounds, a resettable override, and an `AppThemeBinding` override.
+
+### Android ripple smoke checks
+
+The Debug sample includes opt-in native regression checks. Build/install it for an Android
+emulator/device, embedding assemblies in the APK when installing with `adb` rather than an IDE:
+
+```sh
+dotnet build Sample/Sample.csproj -f net8.0-android \
+    -p:TargetFrameworks=net8.0-android -p:RuntimeIdentifier=android-arm64 \
+    -p:EmbedAssembliesIntoApk=true
+adb install -r Sample/bin/Debug/net8.0-android/android-arm64/com.companyname.sample-Signed.apk
+adb shell cmd package resolve-activity --brief com.companyname.sample
+# Use the activity component printed by resolve-activity:
+adb shell am start -n <activity-component> --ez ripple-smoke-test true
+adb logcat -s RippleSmoke
+```
+
+After the `READY` message, switch the system theme to the opposite mode and back, waiting for
+each mode's `PASS` before switching again. For example, use
+`adb shell cmd uimode night yes` and `adb shell cmd uimode night no` on an isolated emulator.
+The checks use a test-only styled context with distinct day/night state lists, compare surviving
+controls against fresh native cards, compare foreground/background focus-ripple rendering, and
+exercise override/reset, background replacement, reattachment, and handler replacement.
+A final `PASS` reports completion; failures are logged and thrown. Run the normal sample as
+well to inspect actual press feedback over nested content.
+
 ## Corner radius sample
 
 The sample's **Corner radius** section demonstrates unset, zero, 25, and 500 radii without the app's implicit
