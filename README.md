@@ -242,6 +242,38 @@ rounded-button style. Check the shapes on first display, then tap the pink butto
 ## Known Issues
 - Due to some recent changes in MAUI itself, this currently requires .NET MAUI 8.0.90 (SR9) or newer
 
+### iOS buttons inside CommunityToolkit Popup v2
+
+Inside CommunityToolkit.Maui Popup v2, an ancestor tap recognizer can cancel touches that start on
+a ContentButton's child view on iOS, preventing `Clicked` and command execution
+([#15](https://github.com/Redth/Maui.ContentButton/issues/15)). If the content is purely decorative,
+set `InputTransparent` on that content so touches target the native button instead:
+
+```xml
+<mcb:ContentButton Command="{Binding ConfirmCommand}">
+    <Label Text="Confirm"
+           InputTransparent="{OnPlatform iOS=True, Default=False}" />
+</mcb:ContentButton>
+```
+
+For decorative nested content, apply it to the content layout:
+
+```xml
+<mcb:ContentButton Command="{Binding ConfirmCommand}">
+    <Grid InputTransparent="{OnPlatform iOS=True, Default=False}"
+          CascadeInputTransparent="True">
+        <Label Text="Confirm" />
+    </Grid>
+</mcb:ContentButton>
+```
+
+Set this on the **content**, not the ContentButton itself. The platform-specific value leaves
+other platforms unchanged. A layout's `CascadeInputTransparent="True"` also makes its descendants
+input-transparent, so use this only where neither the content nor its descendants need their own
+interaction. Do not apply it globally or to content containing interactive controls, scrolling,
+or child gestures that must keep working. ContentButton does not force child input transparency
+or redirect all child hits to itself, because doing so would take input away from those children.
+
 ## Building the desktop backends
 
 The projects under `Backends/` have their own .NET 10 SDK selection so building the original
