@@ -56,9 +56,17 @@ public partial class ContentButtonHandler : ViewHandler<IContentButton, MButton>
 
 	public static void MapCornerRadius(IContentButtonHandler handler, IButtonStroke buttonStroke)
 	{
-		if (handler.PlatformView.Configuration is not null)
+		if (handler.PlatformView.Configuration is { } configuration)
 		{
-			handler.PlatformView.UpdateCornerRadius(buttonStroke);
+			var cornerRadius = Math.Max(0, buttonStroke.CornerRadius);
+
+			// UIKit can overwrite the layer radius during layout unless the configuration agrees.
+			configuration.CornerStyle = UIButtonConfigurationCornerStyle.Fixed;
+			var background = configuration.Background;
+			background.CornerRadius = cornerRadius;
+			configuration.Background = background;
+			handler.PlatformView.Configuration = configuration;
+			handler.PlatformView.Layer.CornerRadius = cornerRadius;
 		}
 	}
 
