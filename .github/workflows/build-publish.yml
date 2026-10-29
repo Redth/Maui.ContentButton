@@ -7,6 +7,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build
@@ -15,9 +18,9 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
     - name: Setup Workloads
@@ -31,7 +34,6 @@ jobs:
         if ($env:GITHUB_EVENT_NAME -eq "release") {
           $VERSION = $env:GITHUB_REF.Substring($env:GITHUB_REF.LastIndexOf('/') + 1)
         }
-        echo "::set-output name=pkgverci::$VERSION"
         echo "PACKAGE VERSION: $VERSION"
         
         New-Item -ItemType Directory -Force -Path .\artifacts
@@ -48,6 +50,8 @@ jobs:
     needs: [build, desktop]
     runs-on: windows-latest
     if: github.event_name == 'release'
+    permissions:
+      id-token: write
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
@@ -55,12 +59,19 @@ jobs:
           pattern: NuGet*
           merge-multiple: true
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - name: NuGet login
+        uses: NuGet/login@ebc737b6fc418a6ca0073cf116ec8dc156d8b81e # v1
+        id: nuget-login
+        with:
+          user: ${{ vars.NUGET_USER }}
       - name: Push NuGet
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_ORG_API_KEY }}
+          dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$env:NUGET_API_KEY"
 
   desktop:
     name: Desktop (${{ matrix.backend }})

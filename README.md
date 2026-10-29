@@ -207,3 +207,43 @@ The smoke checks exercise real native handlers, registration, sizing,
 activation, disabled state, content replacement/removal, styling reset, handler reuse, and cleanup.
 The AppKit smoke test also starts the full MAUI application and verifies that it creates a native
 window, so missing startup resources cannot be hidden by isolated handler checks.
+
+## Publishing packages
+
+The [Build and Publish workflow](.github/workflows/build-publish.yml) builds packages for pull requests
+and pushes to `main`, but publishes to nuget.org only when a GitHub Release is published. The
+release tag is used verbatim as the package version, so use a NuGet version such as `0.4.0` or
+`0.4.0-preview.1` (without a `v` prefix). All build jobs must succeed before publishing the main,
+GTK4, and macOS packages.
+
+Publishing uses [NuGet Trusted Publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing)
+with GitHub Actions OIDC instead of a stored API key. Complete this one-time setup before releasing:
+
+1. Sign in to nuget.org with the account that will publish the packages. Under your username,
+   open **Trusted Publishing** and add a GitHub policy with these values:
+
+   | Field | Value |
+   |-------|-------|
+   | Policy owner | The NuGet user or organization that owns the packages |
+   | Repository owner | `Redth` |
+   | Repository | `Maui.ContentButton` |
+   | Workflow file | `build-publish.yml` (filename only) |
+   | Environment | Leave empty; the workflow does not use a GitHub environment |
+   | Package pattern | `Plugin.Maui.ContentButton*` |
+   | Scopes | Push new packages and package versions |
+
+   The package pattern includes `Plugin.Maui.ContentButton`, `Plugin.Maui.ContentButton.Gtk4`,
+   and `Plugin.Maui.ContentButton.MacOS`. Allowing new packages is needed for the companion
+   packages' first publication. Select an owner with permission to publish all three packages.
+2. In this GitHub repository, open **Settings > Secrets and variables > Actions > Variables**
+   and add a repository variable named `NUGET_USER`. Set it to the publishing account's
+   **NuGet username**, not its email address or an organization name. The existing package
+   owner's username is `redth`. This is not a secret.
+3. Merge the workflow change before publishing a release. The publish job requests a
+   short-lived API key immediately before pushing the built packages; pull requests and
+   ordinary branch pushes cannot run the login or publish steps.
+4. After the first successful OIDC publication, delete the unused `NUGET_ORG_API_KEY` GitHub
+   Actions secret and revoke its old API key on nuget.org if it is not used elsewhere.
+
+The workflow does not fall back to the old API key. An absent `NUGET_USER`, a mismatched policy,
+or insufficient package permissions will fail publishing rather than silently skip it.
