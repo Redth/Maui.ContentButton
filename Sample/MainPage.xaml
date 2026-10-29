@@ -79,6 +79,56 @@
             </mcb:ContentButton>
 
             <Label
+                Text="Android ripple colors"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2" />
+
+            <Label Text="Switch the system light/dark theme without closing the app. Default ripples follow the native theme; explicit colors override it." />
+
+            <VerticalStackLayout Spacing="12">
+                <VerticalStackLayout.Resources>
+                    <Style TargetType="mcb:ContentButton">
+                        <Setter Property="HeightRequest" Value="64" />
+                        <Setter Property="Padding" Value="12" />
+                        <Setter Property="CornerRadius" Value="8" />
+                        <Setter Property="StrokeThickness" Value="0" />
+                    </Style>
+                </VerticalStackLayout.Resources>
+                <mcb:ContentButton AutomationId="RippleNative" Background="{x:Null}">
+                    <Label Text="Native background / default ripple" />
+                </mcb:ContentButton>
+                <mcb:ContentButton AutomationId="RippleSolid" BackgroundColor="LightGray">
+                    <Label Text="Solid background / default ripple" TextColor="Black" />
+                </mcb:ContentButton>
+                <mcb:ContentButton AutomationId="RippleOpaqueContent" Background="{x:Null}" Padding="0">
+                    <Grid BackgroundColor="Gray" Padding="12">
+                        <Label Text="Opaque child / default ripple" TextColor="White" />
+                    </Grid>
+                </mcb:ContentButton>
+                <mcb:ContentButton AutomationId="RippleGradient">
+                    <mcb:ContentButton.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="LightBlue" Offset="0" />
+                            <GradientStop Color="LightPink" Offset="1" />
+                        </LinearGradientBrush>
+                    </mcb:ContentButton.Background>
+                    <Label Text="Gradient / default ripple" TextColor="Black" />
+                </mcb:ContentButton>
+                <mcb:ContentButton x:Name="RippleOverrideButton"
+                                   AutomationId="RippleOverride"
+                                   BackgroundColor="Gray"
+                                   RippleColor="#66FFFFFF"
+                                   Clicked="OnRippleOverrideClicked">
+                    <Label x:Name="RippleOverrideLabel" Text="White ripple: tap to restore native default" TextColor="White" />
+                </mcb:ContentButton>
+                <mcb:ContentButton AutomationId="RippleThemeBinding"
+                                   BackgroundColor="Gray"
+                                   RippleColor="{AppThemeBinding Light=#44000000, Dark=#66FFFFFF}">
+                    <Label Text="Explicit AppThemeBinding ripple" TextColor="White" />
+                </mcb:ContentButton>
+            </VerticalStackLayout>
+
+            <Label
                 Text="Corner radius"
                 Style="{StaticResource SubHeadline}"
                 SemanticProperties.HeadingLevel="Level2" />

@@ -1,4 +1,7 @@
 using Google.Android.Material.Button;
+using Android.Content.Res;
+using Android.Graphics.Drawables;
+using Microsoft.Maui.Platform;
 using AColor = Android.Graphics.Color;
 using R = Android.Resource;
 using MauiContentButton;
@@ -9,6 +12,19 @@ namespace Maui.ContentButton;
 
 internal static class ButtonExtensions
 {
+	internal static void UpdateButtonRippleColor(this MauiMaterialCardView platformView, IContentButton button)
+	{
+		var colors = button.RippleColor is { } color
+			? ColorStateList.ValueOf(color.ToPlatform())
+			: platformView.ResolveDefaultRippleColor();
+
+		platformView.RippleColor = colors;
+		// MAUI copies the initial color into a separate background ripple, and does not
+		// update it when replacing only the paint layer.
+		if (platformView.Background is RippleDrawable ripple)
+			ripple.SetColor(colors);
+	}
+
 	internal static void UpdateButtonStroke(this MaterialCardView platformView, IButtonStroke buttonStroke)
 	{
 		if (!platformView.UpdateMauiRippleDrawableStroke(buttonStroke))

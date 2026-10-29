@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ripple_test_color">#33000000</color>
+    <color name="ripple_test_focus_color">#22000000</color>
+    <style name="RippleTestTheme">
+        <item name="materialCardViewStyle">@style/RippleTestCard</item>
+    </style>
+    <style name="RippleTestCard" parent="Widget.MaterialComponents.CardView">
+        <item name="materialThemeOverlay">@style/RippleTestOverlay</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+    </style>
+    <style name="RippleTestOverlay">
+        <item name="colorControlHighlight">@color/ripple_test_selector</item>
+    </style>
+</resources>

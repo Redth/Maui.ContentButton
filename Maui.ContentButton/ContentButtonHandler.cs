@@ -29,6 +29,9 @@ public partial class ContentButtonHandler : IContentButtonHandler
 #if ANDROID || MACCATALYST || WINDOWS || IOS
 		[nameof(IContentButton.Background)] = MapBackground,
 #endif
+#if ANDROID
+		[nameof(IContentButton.RippleColor)] = MapRippleColor,
+#endif
 	};
 
 	public static CommandMapper<IButton, IButtonHandler> CommandMapper = new(ViewCommandMapper);

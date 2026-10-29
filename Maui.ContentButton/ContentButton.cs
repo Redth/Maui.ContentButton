@@ -106,6 +106,20 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 		set => SetValue(CornerRadiusProperty, value);
 	}
 
+	/// <summary>Bindable property for <see cref="RippleColor"/>.</summary>
+	public static readonly BindableProperty RippleColorProperty =
+		BindableProperty.Create(nameof(RippleColor), typeof(Color), typeof(ContentButton), null);
+
+	/// <summary>
+	/// Gets or sets the Android ripple color, including its alpha.
+	/// A null value uses the current native theme's default. Other platforms ignore this property.
+	/// </summary>
+	public Color? RippleColor
+	{
+		get => (Color?)GetValue(RippleColorProperty);
+		set => SetValue(RippleColorProperty, value);
+	}
+
 	static readonly BindablePropertyKey IsPressedPropertyKey =
 		BindableProperty.CreateReadOnly(nameof(IsPressed), typeof(bool), typeof(ContentButton), default(bool));
 
