@@ -168,22 +168,40 @@ public class ContentButton : View, IContentButton, ICrossPlatformLayout
 	}
 
 	public static readonly BindableProperty CommandProperty = BindableProperty.Create(
-		nameof(Command), typeof(ICommand), typeof(ContentButton), null);
+		nameof(Command), typeof(ICommand), typeof(ContentButton), null,
+		propertyChanging: (bindable, oldValue, newValue) =>
+		{
+			if (oldValue is ICommand oldCommand)
+				oldCommand.CanExecuteChanged -= ((ContentButton)bindable).OnCanExecuteChanged;
+		},
+		propertyChanged: (bindable, oldValue, newValue) =>
+		{
+			var button = (ContentButton)bindable;
+			if (newValue is ICommand newCommand)
+				newCommand.CanExecuteChanged += button.OnCanExecuteChanged;
+			button.RefreshIsEnabledProperty();
+		});
 
-	public ICommand Command
+	public ICommand? Command
 	{
-		get => (ICommand)GetValue(CommandProperty);
+		get => (ICommand?)GetValue(CommandProperty);
 		set => SetValue(CommandProperty, value);
 	}
 
 	public static readonly BindableProperty CommandParameterProperty = BindableProperty.Create(
-		nameof(CommandParameter), typeof(object), typeof(ContentButton), null);
+		nameof(CommandParameter), typeof(object), typeof(ContentButton), null,
+		propertyChanged: (bindable, oldValue, newValue) => ((ContentButton)bindable).RefreshIsEnabledProperty());
 
-	public object CommandParameter
+	public object? CommandParameter
 	{
 		get => GetValue(CommandParameterProperty);
 		set => SetValue(CommandParameterProperty, value);
 	}
+
+	protected override bool IsEnabledCore =>
+		base.IsEnabledCore && (Command?.CanExecute(CommandParameter) ?? true);
+
+	void OnCanExecuteChanged(object? sender, EventArgs e) => RefreshIsEnabledProperty();
 
 	public Size CrossPlatformArrange(Rect bounds)
 	{

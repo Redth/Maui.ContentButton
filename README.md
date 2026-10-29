@@ -160,6 +160,22 @@ You may want to add a style to your app's `Resources/Styles/Styles.xaml` to make
 </Style>
 ```
 
+## Commands and enabled state
+
+`ContentButton` supports `ICommand` through its `Command` and `CommandParameter` properties.
+Like MAUI's standard `Button`, it is enabled only when its explicit or bound `IsEnabled` value,
+its parent's enabled state, and `Command.CanExecute(CommandParameter)` all allow it.
+Without a command, only the normal `IsEnabled` rules apply.
+
+The button re-evaluates command eligibility when the command or parameter changes, or when
+the command raises `CanExecuteChanged`. This preserves `IsEnabled` bindings and updates the
+native enabled state and the `Disabled` visual state (when configured in your style).
+A disabled button does not raise `Clicked` or execute its command.
+
+For automatic disabling during asynchronous work, the command must return `false` from
+`CanExecute` while busy and raise `CanExecuteChanged` when eligibility changes. The button
+does not infer busy state or require a particular MVVM toolkit.
+
 ## Corner radius sample
 
 The sample's **Corner radius** section demonstrates unset, zero, 25, and 500 radii without the app's implicit
