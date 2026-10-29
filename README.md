@@ -183,6 +183,7 @@ dotnet build MacOS/Maui.ContentButton.MacOS.csproj
 
 The AppKit build requires the .NET `macos` workload and matching Xcode. GTK builds require no
 MAUI workload, but running GTK apps requires the backend's native GTK4 dependencies and a display.
+CI pins workload set `10.0.203` and Xcode `26.3`, matching the maui-labs AppKit workflow.
 `Backends/Core/` builds the existing portable core sources without restoring legacy mobile
 workloads; it is not a separate package.
 
