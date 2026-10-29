@@ -18,6 +18,9 @@ Windows allows content nested in the `Button` control, so that's what we are usi
 ### iOS / MacCatalyst
 Apple's platforms have a `UIButton` which also allows adding nested content (subviews).  Just like with windows, we are using a real native `UIButton` to implement this control.
 
+`CornerRadius` uses a fixed radius, including on iOS 26 and later. Zero or an unset value produces square corners
+(unless an app style sets a radius); large values produce a capsule, limited by the button's dimensions.
+
 ### Android
 Android is the trickiest, since its `Button` (and `MaterialButton`) derive from `View` which does _not_ allow directly nested content.  Luckily Android is pretty flexible about making arbitrary views (and `ViewGroup`s) act like a button.  In this case we use `MaterialCardView` to help with the ripple effect, shape, etc and then add click/touch listeners to make it behave like a button.  Android seems to consider this a real authentic button as far as the system and accessibility interations are concerned, it even plays the system 'click' sound when you press it!
 
@@ -113,6 +116,12 @@ You may want to add a style to your app's `Resources/Styles/Styles.xaml` to make
    </Setter>
 </Style>
 ```
+
+## Corner radius sample
+
+The sample's **Corner radius** section demonstrates unset, zero, 25, and 500 radii without the app's implicit
+rounded-button style. Check the shapes on first display, then tap the pink button to cycle through 25, zero,
+500, and the default (-1). Its corners should update immediately and remain correct after pressing or resizing.
 
 ## Known Issues
 - Due to some recent changes in MAUI itself, this currently requires .NET MAUI 8.0.90 (SR9) or newer

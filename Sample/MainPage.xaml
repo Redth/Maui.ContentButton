@@ -78,6 +78,48 @@
                 </Grid>
             </mcb:ContentButton>
 
+            <Label
+                Text="Corner radius"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2" />
+
+            <VerticalStackLayout Spacing="16">
+                <VerticalStackLayout.Resources>
+                    <Style TargetType="mcb:ContentButton">
+                        <Setter Property="HeightRequest" Value="100" />
+                        <Setter Property="Padding" Value="24" />
+                        <Setter Property="StrokeThickness" Value="0" />
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="TextColor" Value="Black" />
+                        <Setter Property="HorizontalTextAlignment" Value="Center" />
+                        <Setter Property="VerticalOptions" Value="Center" />
+                    </Style>
+                </VerticalStackLayout.Resources>
+
+                <mcb:ContentButton BackgroundColor="DarkOrange">
+                    <Label Text="Unset CornerRadius: square corners" />
+                </mcb:ContentButton>
+
+                <mcb:ContentButton BackgroundColor="Red" CornerRadius="0">
+                    <Label Text="CornerRadius = 0: square corners" />
+                </mcb:ContentButton>
+
+                <mcb:ContentButton
+                    x:Name="RadiusTestButton"
+                    BackgroundColor="LightPink"
+                    CornerRadius="25"
+                    Clicked="OnRadiusTestClicked">
+                    <Label
+                        x:Name="RadiusTestLabel"
+                        Text="CornerRadius = 25: tap to change" />
+                </mcb:ContentButton>
+
+                <mcb:ContentButton BackgroundColor="LightBlue" CornerRadius="500">
+                    <Label Text="CornerRadius = 500: capsule corners" />
+                </mcb:ContentButton>
+            </VerticalStackLayout>
+
         </VerticalStackLayout>
     </ScrollView>
 

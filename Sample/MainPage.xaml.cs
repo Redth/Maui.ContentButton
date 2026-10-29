@@ -9,6 +9,18 @@
             InitializeComponent();
         }
 
+        private void OnRadiusTestClicked(object sender, EventArgs e)
+        {
+            RadiusTestButton.CornerRadius = RadiusTestButton.CornerRadius switch
+            {
+                25 => 0,
+                0 => 500,
+                500 => MauiContentButton.ContentButton.DefaultCornerRadius,
+                _ => 25
+            };
+            RadiusTestLabel.Text = $"CornerRadius = {RadiusTestButton.CornerRadius}: tap to change";
+        }
+
         private void OnCounterClicked(object sender, EventArgs e)
         {
             count++;
