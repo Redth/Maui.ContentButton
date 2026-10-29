@@ -45,14 +45,15 @@ jobs:
 
   publish:
     name: Publish
-    needs: build
+    needs: [build, desktop]
     runs-on: windows-latest
     if: github.event_name == 'release'
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: NuGet
+          pattern: NuGet*
+          merge-multiple: true
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -60,3 +61,66 @@ jobs:
       - name: Push NuGet
         run: |
           dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_ORG_API_KEY }}
+
+  desktop:
+    name: Desktop (${{ matrix.backend }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - backend: Gtk4
+            os: ubuntu-latest
+          - backend: MacOS
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
+    env:
+      NUPKG_MAJOR: 0.999
+    defaults:
+      run:
+        working-directory: Backends
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Select Xcode
+        if: matrix.backend == 'MacOS'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - name: Install macOS workload
+        if: matrix.backend == 'MacOS'
+        run: dotnet workload install macos
+      - name: Install GTK runtime
+        if: matrix.backend == 'Gtk4'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-4-1 libwebkitgtk-6.0-4 xvfb
+      - name: Test shared desktop behavior
+        run: dotnet test Tests/Maui.ContentButton.Backends.Tests.csproj --configuration Release
+      - name: Build native sample
+        run: dotnet build Samples/${{ matrix.backend }}/ContentButton.${{ matrix.backend }}.Sample.csproj --configuration Release
+      - name: Exercise GTK native handler
+        if: matrix.backend == 'Gtk4'
+        env:
+          GDK_BACKEND: x11
+          GSK_RENDERER: cairo
+          GTK_A11Y: none
+        run: xvfb-run -a dotnet run --project Samples/Gtk4/ContentButton.Gtk4.Sample.csproj --configuration Release --no-build -- --smoke-test
+      - name: Exercise AppKit native handler
+        if: matrix.backend == 'MacOS'
+        shell: bash
+        run: |
+          "Samples/MacOS/bin/Release/net10.0-macos/ContentButton AppKit.app/Contents/MacOS/ContentButton.MacOS.Sample" --smoke-test
+      - name: Package companion NuGet
+        shell: pwsh
+        run: |
+          $VERSION="$env:NUPKG_MAJOR-ci$env:GITHUB_RUN_ID"
+          if ($env:GITHUB_EVENT_NAME -eq "release") {
+            $VERSION = $env:GITHUB_REF.Substring($env:GITHUB_REF.LastIndexOf('/') + 1)
+          }
+          dotnet pack ${{ matrix.backend }}/Maui.ContentButton.${{ matrix.backend }}.csproj --configuration Release --output ../artifacts -p:PackageVersion=$VERSION
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: NuGet-${{ matrix.backend }}
+          path: ./artifacts

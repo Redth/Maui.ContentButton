@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+    <PackageId>Plugin.Maui.ContentButton.MacOS</PackageId>
+    <Description>Native AppKit ContentButton support for the experimental .NET MAUI macOS backend.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Platforms.MacOS" Version="$(MauiLabsMacOSVersion)" />
+    <ProjectReference Include="../Core/Maui.ContentButton.csproj" />
+    <Compile Include="../Shared/*.cs" Link="Shared/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

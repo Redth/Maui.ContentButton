@@ -24,6 +24,49 @@ Apple's platforms have a `UIButton` which also allows adding nested content (sub
 ### Android
 Android is the trickiest, since its `Button` (and `MaterialButton`) derive from `View` which does _not_ allow directly nested content.  Luckily Android is pretty flexible about making arbitrary views (and `ViewGroup`s) act like a button.  In this case we use `MaterialCardView` to help with the ripple effect, shape, etc and then add click/touch listeners to make it behave like a button.  Android seems to consider this a real authentic button as far as the system and accessibility interations are concerned, it even plays the system 'click' sound when you press it!
 
+### Linux / GTK4 and macOS / AppKit
+
+The experimental [GTK4](https://github.com/dotnet/maui-labs/tree/main/platforms/Linux.Gtk4) and
+[AppKit](https://github.com/dotnet/maui-labs/tree/main/platforms/MacOS) backends in `dotnet/maui-labs`
+are supported by separate companion packages. They require .NET 10; the original package and its
+.NET 8 platform targets are unchanged.
+
+| Backend | Companion package | Target framework | Registration |
+|---------|-------------------|------------------|--------------|
+| Linux GTK4 | `Plugin.Maui.ContentButton.Gtk4` | `net10.0` | `.AddMauiContentButtonGtk4Handler()` |
+| macOS AppKit | `Plugin.Maui.ContentButton.MacOS` | `net10.0-macos` | `.AddMauiContentButtonMacOSHandler()` |
+
+Reference the companion package for your backend; it also references `Plugin.Maui.ContentButton`.
+Use its registration method **after** the backend's application setup, instead of the original
+`.AddMauiContentButtonHandler()`:
+
+```csharp
+using MauiContentButton;
+
+// Linux, with Microsoft.Maui.Platforms.Linux.Gtk4.Hosting:
+builder.UseMauiAppLinuxGtk4<App>()
+    .AddMauiContentButtonGtk4Handler();
+
+// Or macOS, with Microsoft.Maui.Platforms.MacOS.Hosting:
+builder.UseMauiAppMacOS<App>()
+    .AddMauiContentButtonMacOSHandler();
+```
+
+The XAML namespace and `ContentButton` API are the same on all platforms. GTK uses a native
+`Gtk.Button` with a MAUI layout panel as its child. AppKit uses a native `NSButton` subclass
+with nested views and native hit testing, keyboard activation, and accessibility activation.
+Both handlers support content replacement/removal, padding, stroke, corner radius, backgrounds,
+enabled state, and `Pressed` / `Released` / `Clicked` events. Cancelling a press or disconnecting
+the handler releases the button without executing its command. AppKit is a separate backend,
+not Mac Catalyst, and requires macOS 14 or newer.
+
+The GTK package currently targets `Microsoft.Maui.Platforms.Linux.Gtk4`
+`0.1.0-preview.13.26526.5`; AppKit targets `Microsoft.Maui.Platforms.MacOS`
+`0.1.0-preview.12.26421.1`. Both require MAUI 10.0.41 or newer. AppKit is pinned before the
+preview.13 menu-localization change because those NuGet packages omit the required
+`MauiMenuBar.bundle` resources and fail during application startup.
+The backends are experimental and may introduce breaking changes.
+
 ## Usage
 
 Add `.AddMauiContentButtonHandler()` to your app builder in your MauiProgram.cs:
@@ -125,3 +168,41 @@ rounded-button style. Check the shapes on first display, then tap the pink butto
 
 ## Known Issues
 - Due to some recent changes in MAUI itself, this currently requires .NET MAUI 8.0.90 (SR9) or newer
+
+## Building the desktop backends
+
+The projects under `Backends/` have their own .NET 10 SDK selection so building the original
+solution still uses .NET 8. Run desktop commands from that directory:
+
+```sh
+cd Backends
+dotnet test Tests/Maui.ContentButton.Backends.Tests.csproj
+dotnet build Gtk4/Maui.ContentButton.Gtk4.csproj
+dotnet build MacOS/Maui.ContentButton.MacOS.csproj
+```
+
+The AppKit build requires the .NET `macos` workload and matching Xcode. GTK builds require no
+MAUI workload, but running GTK apps requires the backend's native GTK4 dependencies and a display.
+`Backends/Core/` builds the existing portable core sources without restoring legacy mobile
+workloads; it is not a separate package.
+
+Runnable samples share the same content and exercise nested layout, click counting, disabled
+state, and content replacement:
+
+```sh
+# On Linux:
+dotnet run --project Samples/Gtk4/ContentButton.Gtk4.Sample.csproj
+
+# On macOS:
+dotnet run --project Samples/MacOS/ContentButton.MacOS.Sample.csproj
+```
+
+The GTK sample also supports `-- --smoke-test` (use `xvfb-run -a` on headless Linux).
+For AppKit smoke tests, build the sample and run its executable inside
+`Samples/MacOS/bin/Debug/net10.0-macos/<runtime>/ContentButton AppKit.app/Contents/MacOS/ContentButton.MacOS.Sample`
+with `--smoke-test`. For a default Release build, use the signed universal bundle under
+`bin/Release/net10.0-macos/ContentButton AppKit.app` instead of its per-runtime intermediate bundles.
+The smoke checks exercise real native handlers, registration, sizing,
+activation, disabled state, content replacement/removal, styling reset, handler reuse, and cleanup.
+The AppKit smoke test also starts the full MAUI application and verifies that it creates a native
+window, so missing startup resources cannot be hidden by isolated handler checks.
