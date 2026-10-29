@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageId>Plugin.Maui.ContentButton</PackageId>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Build the existing portable asset without restoring the legacy mobile workloads. -->
+    <Compile Include="../../Maui.ContentButton/*.cs" Link="%(Filename)%(Extension)" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.90" />
+  </ItemGroup>
+</Project>
