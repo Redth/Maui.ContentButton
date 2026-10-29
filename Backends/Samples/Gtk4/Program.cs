@@ -24,7 +24,7 @@ class Program : GtkMauiApplication
 	{
 		if (args.Contains("--smoke-test"))
 		{
-			Gtk.Functions.Init();
+			Gtk.Module.Initialize();
 			using var app = CreateApp();
 			var button = SmokeTests.CreateButton();
 			var native = (Gtk.Button)button.ToPlatform(new MauiContext(app.Services));
